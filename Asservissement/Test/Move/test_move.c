@@ -6,13 +6,8 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
-
-float Pi = 3.14;
-
-
-#define BOLD_FONT "./DejaVuSans-Bold.ttf"
-#define FONT "./DejaVuSans.ttf"
-
+#define BOLD_FONT "/nix/store/qkhgjgd5h329hvq7p93jfzx4rmandj8v-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSans-Bold.ttf"
+#define FONT "/nix/store/qkhgjgd5h329hvq7p93jfzx4rmandj8v-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSans.ttf"
 
 
 //for transform v in good coord in graph
@@ -22,16 +17,13 @@ int conv (float v, float maxv, int maxg)
 }
 
 
-
-
-
 //pretty print in console
 void printret(float retour[2][6],float time)
 {
 	static int rep = 0;
-	FILE* Deb = (rep == 0 ?fopen("rotate/Debug_rt.txt","w"):fopen("rotate/Debug_rt.txt","a"));
-	printf("__________________________________________\nRep: %d -> %fs  %frad\n",rep,time,retour[0][5]);
-	fprintf(Deb,"__________________________________________\nRep: %d -> %fs  %frad\n",rep,time,retour[0][5]);
+	FILE* Deb = (rep == 0 ?fopen("Move/Debug_mv.txt","w"):fopen("Move/Debug_mv.txt","a"));
+	printf("__________________________________________\nRep: %d -> %fs  %fm\n",rep,time,retour[0][5]);
+	fprintf(Deb,"__________________________________________\nRep: %d -> %fs  %fm\n",rep,time,retour[0][5]);
     for(int i = 0; i < 2; i++)
     {
         char dir []= "Right";
@@ -109,22 +101,22 @@ SDL_Surface* Init_graph(float d, int lx, int ly, int w, int h, int p, int l, int
 	SDL_FillRect(Graph,&ordo2,pur);
 
 	//build title and legende
-	SDL_Surface* texte = TTF_RenderText_Blended(pol,"Speed",blc);
+	SDL_Surface* texte = TTF_RenderText_Blended(pol,"SpeedReal",blc);
 	if (texte == NULL) //if error with texte
 		errx(1,"Error when creating texte");
 	SDL_Rect pos = {10,36,0,0};
 	SDL_BlitSurface(texte, NULL,Graph,&pos);
-	//_______ legende 2
-	SDL_FreeSurface(texte);
+	//_______ legende 3
 	pos.x = 10;
 	pos.y = 6;
+	SDL_FreeSurface(texte);
 	texte = TTF_RenderText_Blended(pol,"SpeedExpected",rgc);
 	SDL_BlitSurface(texte, NULL,Graph,&pos);
-	//_______ legende 3
-	pos.x = w+115;
+	//_______ legende 4
+	pos.x = w+65;
 	pos.y = 6;
 	SDL_FreeSurface(texte);
-	texte = TTF_RenderText_Blended(pol,"Angle",purc);
+	texte = TTF_RenderText_Blended(pol,"Distance",purc);
 	SDL_BlitSurface(texte, NULL,Graph,&pos);
 	//_______ tiltle
 	SDL_FreeSurface(texte);
@@ -134,11 +126,10 @@ SDL_Surface* Init_graph(float d, int lx, int ly, int w, int h, int p, int l, int
 	SDL_BlitSurface(texte, NULL,Graph,&pos);
 	//_______ subtiltle
 	SDL_FreeSurface(texte);
-	pos.x = p+w/3+100;
+	pos.x = p+w/3+125;
 	pos.y = 70;
-	texte = TTF_RenderText_Blended(polt,"Rotate",noirc);
+	texte = TTF_RenderText_Blended(polt,"Move",noirc);
 	SDL_BlitSurface(texte, NULL,Graph,&pos);
-
 
 	//build graduation
 	for (float i =0.125 ; i<ly; i+=0.125)
@@ -210,9 +201,9 @@ SDL_Surface* Init_graph(float d, int lx, int ly, int w, int h, int p, int l, int
 	SDL_BlitSurface(texte, NULL,Graph,&pos);
 	//________
 	SDL_FreeSurface(texte);
-	pos.x = p+w-10;
+	pos.x = p+w-5;
 	pos.y = p-25;
-	texte = TTF_RenderText_Blended(poli,"rad",purc);
+	texte = TTF_RenderText_Blended(poli,"m",purc);
 	SDL_BlitSurface(texte, NULL,Graph,&pos);
 	//________
 	SDL_FreeSurface(texte);
@@ -240,7 +231,7 @@ SDL_Surface* Init_graph(float d, int lx, int ly, int w, int h, int p, int l, int
 
 
 
-void Print_graph(SDL_Surface* Graph,float retour[2][6], float a, int lx, int ly, int w, int h, int p, int l, int L, float time,float angle)
+void Print_graph(SDL_Surface* Graph,float retour[2][6], float d, int lx, int ly, int w, int h, int p, int l, int L, float time,float distance)
 {
 	//create color
 	Uint32 rg = SDL_MapRGB(Graph->format,237,49,49);
@@ -249,13 +240,13 @@ void Print_graph(SDL_Surface* Graph,float retour[2][6], float a, int lx, int ly,
 	//build crosse on graph
 	int vx = conv(time,lx,w);
 	int vyR = conv(retour[1][2],ly,h);
-	int angl = conv(a-angle-1,a,h);
+	int dist = conv(d-distance-1,d,h);
 	int vspeed = conv(retour[1][4],ly,h);
 	SDL_Rect barre2 = {p+vx,p+h+1-vspeed-l-l/2,L/4,l*2};
 	SDL_FillRect(Graph,&barre2,rg);
 	SDL_Rect barre3 = {p+vx,p+h+1-vyR-l,L/4,l};
 	SDL_FillRect(Graph,&barre3,bl);
-	SDL_Rect barre4 = {p+vx,p+1+h-angl-l,L/4,l};
+	SDL_Rect barre4 = {p+vx,p+1+h-dist-l,L/4,l};
 	SDL_FillRect(Graph,&barre4,pur);
 }
 
@@ -282,11 +273,11 @@ int main(int argc, char* argv[])
 	else if (argc == 2)
 		path = argv[1];
 	else
-		path = "rotate/GraphPIDrt.png";
+		path = "move/GraphPIDmv.png";
 
 	//for test pid
-  	float angle = Pi;  //in m
-	float a = angle+1;
+  	float distance = 2;  //in m
+	float d = distance+1;
   	float time = 0;
   	float lastTime = 0;
   	float time_reg = 0.01;
@@ -304,22 +295,22 @@ int main(int argc, char* argv[])
 	int L = 20;  //largeur gros trait 
 	int ly = 2;  //limite des valeurs en y
 	int lx = 5;  //limite des valeurs en x
-	int left = -1;
+	int forward = 1;
 
-	SDL_Surface* Graph= Init_graph(a,lx,ly,w,h,p,l,L);
+	SDL_Surface* Graph= Init_graph(d,lx,ly,w,h,p,l,L);
 
 	//start of debugging asserv
-  	while (angle != 0 && time <= lx)
+  	while (distance != 0 && time <= lx)
   	{
 	  	if (time -lastTime >= time_reg || time == 0) //not neccesary but put for not prettyprint every time
 	  	{
-		  	angle = rotate(angle,left,time,nbTurnsLeft,nbTurnsRight,retour);
+		  	distance = move(distance,forward,time,nbTurnsLeft,nbTurnsRight,retour);
 		  	printret(retour,time);
 		  	lastTime = time;
 		  	nbTurnsRight = (retour[1][4]*time_reg)/(PI*WHEEL_DIAG);
 		  	nbTurnsLeft = (retour[0][4]*time_reg)/(PI*WHEEL_DIAG);
 
-			Print_graph(Graph, retour, a, lx, ly, w, h, p, l, L,time,angle);
+			Print_graph(Graph, retour, d, lx, ly, w, h, p, l, L,time,distance);
 
 	  	}
 	  	time+=0.001;

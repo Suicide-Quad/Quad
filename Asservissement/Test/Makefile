@@ -13,10 +13,10 @@ debugm: CPFLAGS+=-g
 debugm: mv
 
 
-rot: asserv.c rotate/test_rotate.c
+rot: asserv.c Rotate/test_rotate.c
 	$(CC) $^ $(CPFLAGS) $(LDLIBS) -o rot
 
-mv: asserv.c move/test_move.c
+mv: asserv.c Move/test_move.c
 	$(CC) $^ $(CPFLAGS) $(LDLIBS) -o mv
 
 .PHONY:clean
