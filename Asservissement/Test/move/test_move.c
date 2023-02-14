@@ -6,8 +6,8 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
-
-
+#define BOLD_FONT "./DejaVuSans-Bold.ttf"
+#define FONT "./DejaVuSans.ttf"
 
 
 //for transform v in good coord in graph
@@ -15,9 +15,6 @@ int conv (float v, float maxv, int maxg)
 {
 	return v*maxg/maxv;
 }
-
-
-
 
 
 //pretty print in console
@@ -76,10 +73,10 @@ SDL_Surface* Init_graph(float d, int lx, int ly, int w, int h, int p, int l, int
 
 	//create image and font
 	SDL_Surface* Graph = SDL_CreateRGBSurface(SDL_SWSURFACE, 2*p+w,2*p+h,32,0,0,0,0);
-	TTF_Font * pol = TTF_OpenFont("/nix/store/qkhgjgd5h329hvq7p93jfzx4rmandj8v-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSans.ttf",28);
-	TTF_Font * poli = TTF_OpenFont("/nix/store/qkhgjgd5h329hvq7p93jfzx4rmandj8v-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSans.ttf",19);
-	TTF_Font * polu = TTF_OpenFont("/nix/store/qkhgjgd5h329hvq7p93jfzx4rmandj8v-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSans-Bold.ttf",42);
-	TTF_Font * polt = TTF_OpenFont("/nix/store/qkhgjgd5h329hvq7p93jfzx4rmandj8v-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSans-Bold.ttf",40);
+	TTF_Font * pol = TTF_OpenFont(FONT,28);
+	TTF_Font * poli = TTF_OpenFont(FONT,19);
+	TTF_Font * polu = TTF_OpenFont(BOLD_FONT,42);
+	TTF_Font * polt = TTF_OpenFont(BOLD_FONT,40);
 	TTF_SetFontStyle(polt,TTF_STYLE_UNDERLINE);
 
 	//if graph error
@@ -298,6 +295,7 @@ int main(int argc, char* argv[])
 	int L = 20;  //largeur gros trait 
 	int ly = 2;  //limite des valeurs en y
 	int lx = 5;  //limite des valeurs en x
+	int forward = 1;
 
 	SDL_Surface* Graph= Init_graph(d,lx,ly,w,h,p,l,L);
 
@@ -306,7 +304,7 @@ int main(int argc, char* argv[])
   	{
 	  	if (time -lastTime >= time_reg || time == 0) //not neccesary but put for not prettyprint every time
 	  	{
-		  	distance = move(distance,FORWARD,time,nbTurnsLeft,nbTurnsRight,retour);
+		  	distance = move(distance,forward,time,nbTurnsLeft,nbTurnsRight,retour);
 		  	printret(retour,time);
 		  	lastTime = time;
 		  	nbTurnsRight = (retour[1][4]*time_reg)/(PI*WHEEL_DIAG);

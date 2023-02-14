@@ -1,4 +1,7 @@
 
+#include "asserv.h"
+
+
 /*_____Macro_____*/
 
 //macro for calcul PID:
@@ -32,7 +35,7 @@
 /*_____Global Variable_____*/
 
 //Timer for make regular PID
-float TIME_REG = 0.01;  //in s
+float TIME_REG = 0.01;
 
 //Motor Statistic
 float MOTOR_LIMIT_MAX = 1000;  //in m/s
