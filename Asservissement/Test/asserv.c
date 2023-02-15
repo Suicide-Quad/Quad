@@ -5,9 +5,9 @@
 /*_____Macro_____*/
 
 //macro for calcul PID:
-#define KP 1//0.7
-#define KI 0//0.01
-#define KD 0//0.25
+#define KP 0.7
+#define KI 0.01
+#define KD 0.25
 
 //macro for call easly computePID
 #define SET 1
