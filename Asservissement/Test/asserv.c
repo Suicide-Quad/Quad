@@ -20,9 +20,6 @@
 #define ENTRAXE 0.45 //in m
 #define getDistance(rotary) PI*WHEEL_DIAG*rotary
 
-//macro Math
-#define PI 3.14
-
 //macro for phase of movement
 #define ACCELERATE 1
 #define STABLE 2
@@ -33,6 +30,9 @@
 
 
 /*_____Global Variable_____*/
+
+//const Math
+const float PI = 3.14;
 
 //Timer for make regular PID
 float TIME_REG = 0.01;
@@ -76,7 +76,10 @@ int BACKWARD = (-1);
 int LEFT = (-1);
 int RIGHT = 1;
 
-
+//Global position and rotation
+float posX = 0;
+float posY = 0;
+float rotation = 0;
 
 /*_____Function_____*/
 
@@ -125,7 +128,7 @@ float computePID(float error,float input, int direction, int reset)
 float move(float distance, int dir, /* args for testing ->*/ float timeNow, float nbTurnsLeft, float nbTurnsRight, float retour [2][6]) //move robot to the distance(m) and return the distance left in m, dir indicate the direction to move
 {
 
-	dir ++; //at del
+	dir +=0; //at del
 	
 
 	//timer for regular pid in sec
@@ -200,6 +203,20 @@ float move(float distance, int dir, /* args for testing ->*/ float timeNow, floa
 
 		//change distance at do
 		distance -= (distanceLeft+distanceRight)/2;
+		//calculated coord
+		if (rotation == 0)
+			posX+=dir*(distanceLeft+distanceRight)/2;
+		else if (rotation == PI || rotation == -PI)
+			posX-=dir*(distanceLeft+distanceRight)/2;
+		else if (rotation == PI/2)
+			posY+=dir*(distanceLeft+distanceRight)/2;
+		else if (rotation == - PI/2)
+			posY-=dir*(distanceLeft+distanceRight)/2;
+		else
+		{
+			posX+=dir*cosf(rotation)*((distanceLeft+distanceRight)/2);
+			posY+=dir*sinf(rotation)*((distanceLeft+distanceRight)/2);
+		}
 		//manage all phase of movement
 		if (distance <= 0) //completly stop and restore PID
 		{
@@ -274,7 +291,7 @@ float move(float distance, int dir, /* args for testing ->*/ float timeNow, floa
 
 float rotate(float angle, int dir,/* args for testing ->*/ float timeNow, float nbTurnsLeft, float nbTurnsRight, float retour [2][6]) //rotate robot in angle(rad) and return the angle left in rad
 {
-	dir ++; //at del
+	dir +=0; //at del
 	
 
 	//timer for regular pid in sec
@@ -345,10 +362,19 @@ float rotate(float angle, int dir,/* args for testing ->*/ float timeNow, float 
 		//give commande to both motor
 		//not forget to do Commande*dir for motorleft and Commande*-dir for motorright
 
-        
 
-		//change angle at do
-		angle -= 2*distanceRight/ENTRAXE;
+
+		//change angle at do and calculate relatif rotation
+		if (dir == LEFT)
+		{
+			angle -= 2*distanceRight/ENTRAXE;
+			rotation -= (2*distanceRight/ENTRAXE);
+		}
+		else
+		{
+			angle -= 2*distanceLeft/ENTRAXE;
+			rotation += (2*distanceLeft/ENTRAXE);
+		}
 		//manage all phase of movement
 		if (angle <= 0) //completly stop and restore PID
 		{

@@ -1,10 +1,14 @@
 #ifndef ASSERV_H
 #define ASSERV_H
+#include <math.h>
 
 int FORWARD;
 int BACKWARD;
 int LEFT;
 int RIGHT;
+float posX;
+float posY;
+float rotation;
 
 /*for call need to do:
   float distance = x ; //(in m and >0)

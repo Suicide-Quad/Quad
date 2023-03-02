@@ -273,7 +273,7 @@ int main(int argc, char* argv[])
 	else if (argc == 2)
 		path = argv[1];
 	else
-		path = "move/GraphPIDmv.png";
+		path = "Move/GraphPIDmv.png";
 
 	//for test pid
   	float distance = 2;  //in m
@@ -300,6 +300,7 @@ int main(int argc, char* argv[])
 	SDL_Surface* Graph= Init_graph(d,lx,ly,w,h,p,l,L);
 
 	//start of debugging asserv
+	rotation = 3.14/3;
   	while (distance != 0 && time <= lx)
   	{
 	  	if (time -lastTime >= time_reg || time == 0) //not neccesary but put for not prettyprint every time
@@ -315,6 +316,8 @@ int main(int argc, char* argv[])
 	  	}
 	  	time+=0.001;
   	}
+
+	printf("PosX=%f,PosY=%f,rotation=%f",posX,posY,rotation);
 
 	Close_graph(Graph,path);
 
