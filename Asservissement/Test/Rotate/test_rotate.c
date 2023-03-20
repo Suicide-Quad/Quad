@@ -282,10 +282,10 @@ int main(int argc, char* argv[])
 	else if (argc == 2)
 		path = argv[1];
 	else
-		path = "rotate/GraphPIDrt.png";
+		path = "Rotate/GraphPIDrt.png";
 
 	//for test pid
-  	float angle = Pi;  //in m
+  	float angle = Pi/2;  //in m
 	float a = angle+1;
   	float time = 0;
   	float lastTime = 0;
@@ -313,7 +313,7 @@ int main(int argc, char* argv[])
   	{
 	  	if (time -lastTime >= time_reg || time == 0) //not neccesary but put for not prettyprint every time
 	  	{
-		  	angle = rotate(angle,left,time,nbTurnsLeft,nbTurnsRight,retour);
+		  	angle = rotate(angle,left*(-1),time,nbTurnsLeft,nbTurnsRight,retour);
 		  	printret(retour,time);
 		  	lastTime = time;
 		  	nbTurnsRight = (retour[1][4]*time_reg)/(PI*WHEEL_DIAG);
@@ -324,7 +324,8 @@ int main(int argc, char* argv[])
 	  	}
 	  	time+=0.001;
   	}
-
+	
+	printf("\nposX=%f,posY=%f,rotation=%f",posX,posY,rotation);
 	Close_graph(Graph,path);
 
   	return 1;

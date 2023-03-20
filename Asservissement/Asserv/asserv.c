@@ -2,9 +2,9 @@
 /*_____Macro_____*/
 
 //macro for calcul PID:
-#define KP 1//0.7
-#define KI 0//0.01
-#define KD 0//0.25
+#define KP 0.7
+#define KI 0.01
+#define KD 0.25
 
 //macro for call easly computePID
 #define SET 1
@@ -17,9 +17,6 @@
 #define ENTRAXE 0.45 //in m
 #define getDistance(rotary) PI*WHEEL_DIAG*rotary
 
-//macro Math
-#define PI 3.14
-
 //macro for phase of movement
 #define ACCELERATE 1
 #define STABLE 2
@@ -30,6 +27,9 @@
 
 
 /*_____Global Variable_____*/
+
+//const Math
+const float PI = 3.14;
 
 //Timer for make regular PID
 float TIME_REG = 0.01;  //in s
@@ -72,6 +72,13 @@ int BACKWARD = (-1);
 //Value for choose direction to rotate
 int LEFT = (-1);
 int RIGHT = 1;
+
+//Global position and rotation
+float posX = 0;
+float posY = 0;
+float rotation = 0;
+
+
 
 
 
@@ -171,6 +178,20 @@ float move(float distance, int dir) //move robot to the distance(m) and return t
 
 		//change distance at do
 		distance -= (distanceLeft+distanceRight)/2;
+		//calculated coord
+		if (rotation == 0)
+			posX+=dir*(distanceLeft+distanceRight)/2;
+		else if (rotation == PI || rotation == -PI)
+			posX-=dir*(distanceLeft+distanceRight)/2;
+		else if (rotation == PI/2)
+			posY+=dir*(distanceLeft+distanceRight)/2;
+		else if (rotation == - PI/2)
+			posY-=dir*(distanceLeft+distanceRight)/2;
+		else
+		{
+			posX+=dir*cosf(rotation)*((distanceLeft+distanceRight)/2);
+			posY+=dir*sinf(rotation)*((distanceLeft+distanceRight)/2);
+		}
 		//manage all phase of movement
 		if (distance <= 0) //completly stop and restore PID
 		{
@@ -275,9 +296,20 @@ float rotate(float angle, int dir) //rotate robot in angle(rad) and return the a
 
 		//give commande to both motor
 														//<-put Commande*dir for leftmotor and Commande*-dir for rightmotor
+		
 
-		//change angle at do
-		angle -= 2*distanceRight/ENTRAXE;
+
+		//change angle at do and calculate relatif rotation
+		if (dir == LEFT)
+		{
+			angle -= 2*distanceRight/ENTRAXE;
+			rotation -= (2*distanceRight/ENTRAXE);
+		}
+		else
+		{
+			angle -= 2*distanceLeft/ENTRAXE;
+			rotation += (2*distanceLeft/ENTRAXE);
+		}
 		//manage all phase of movement
 		if (angle <= 0) //completly stop and restore PID
 		{
