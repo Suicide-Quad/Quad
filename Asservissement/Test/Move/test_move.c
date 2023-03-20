@@ -6,8 +6,13 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
+<<<<<<< Updated upstream:Asservissement/Test/Move/test_move.c
 #define BOLD_FONT "/nix/store/qkhgjgd5h329hvq7p93jfzx4rmandj8v-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSans-Bold.ttf"
 #define FONT "/nix/store/qkhgjgd5h329hvq7p93jfzx4rmandj8v-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSans.ttf"
+=======
+#define BOLD_FONT "/home/vym/Prog/C/Quad/Asservissement/Test/move/DejaVuSans-Bold.ttf"
+#define FONT "/home/vym/Prog/C/Quad/Asservissement/Test/move/DejaVuSans.ttf"
+>>>>>>> Stashed changes:Asservissement/Test/move/test_move.c
 
 
 //for transform v in good coord in graph
