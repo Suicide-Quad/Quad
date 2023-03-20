@@ -103,8 +103,8 @@ void Error_Handler(void);
 #define SPI_INT3_GPIO_Port GPIOC
 #define SPI_INT4_Pin GPIO_PIN_3
 #define SPI_INT4_GPIO_Port GPIOC
-#define GREEN_LED_Pin GPIO_PIN_5
-#define GREEN_LED_GPIO_Port GPIOA
+#define MOTOR4_PWM_L_Pin GPIO_PIN_7
+#define MOTOR4_PWM_L_GPIO_Port GPIOA
 #define ANALOG_3_Pin GPIO_PIN_4
 #define ANALOG_3_GPIO_Port GPIOC
 #define ANALOG_4_Pin GPIO_PIN_5
@@ -117,6 +117,10 @@ void Error_Handler(void);
 #define SWITH_2_GPIO_Port GPIOF
 #define SWITH_3_Pin GPIO_PIN_12
 #define SWITH_3_GPIO_Port GPIOF
+#define MOTOR1_PWM_L_Pin GPIO_PIN_8
+#define MOTOR1_PWM_L_GPIO_Port GPIOE
+#define MOTOR1_PWM_H_Pin GPIO_PIN_9
+#define MOTOR1_PWM_H_GPIO_Port GPIOE
 #define SPI_SS1_Pin GPIO_PIN_14
 #define SPI_SS1_GPIO_Port GPIOE
 #define SPI_SS2_Pin GPIO_PIN_15
@@ -139,6 +143,8 @@ void Error_Handler(void);
 #define STLK_TX_GPIO_Port GPIOD
 #define USB_OverCurrent_Pin GPIO_PIN_7
 #define USB_OverCurrent_GPIO_Port GPIOG
+#define MOTOR4_PWM_H_Pin GPIO_PIN_6
+#define MOTOR4_PWM_H_GPIO_Port GPIOC
 #define USB_SOF_Pin GPIO_PIN_8
 #define USB_SOF_GPIO_Port GPIOA
 #define USB_VBUS_Pin GPIO_PIN_9
