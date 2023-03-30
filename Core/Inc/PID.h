@@ -2,13 +2,13 @@
 #define ASSERV_H
 #include <math.h>
 
-int FORWARD;
-int BACKWARD;
-int LEFT;
-int RIGHT;
-float posX;
-float posY;
-float rotation;
+enum Direction
+{
+    FORWARD = 0,
+    BACKWARD = 2,
+    LEFT = 1,
+    RIGHT = 3
+};
 
 float move(float distance, int dir); //move robot to the distance(m) and return the distance left in m, dir is BACKWARD or FORWARD 
 
