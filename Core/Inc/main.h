@@ -117,10 +117,6 @@ void Error_Handler(void);
 #define SWITH_2_GPIO_Port GPIOF
 #define SWITH_3_Pin GPIO_PIN_12
 #define SWITH_3_GPIO_Port GPIOF
-#define MOTOR1_PWM_L_Pin GPIO_PIN_8
-#define MOTOR1_PWM_L_GPIO_Port GPIOE
-#define MOTOR1_PWM_H_Pin GPIO_PIN_9
-#define MOTOR1_PWM_H_GPIO_Port GPIOE
 #define SPI_SS1_Pin GPIO_PIN_14
 #define SPI_SS1_GPIO_Port GPIOE
 #define SPI_SS2_Pin GPIO_PIN_15
