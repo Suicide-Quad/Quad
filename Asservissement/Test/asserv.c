@@ -205,17 +205,17 @@ float move(float distance, int dir, /* args for testing ->*/ float timeNow, floa
 		distance -= (distanceLeft+distanceRight)/2;
 		//calculated coord
 		if (rotation == 0)
-			posX+=dir*(distanceLeft+distanceRight)/2;
-		else if (rotation == PI || rotation == -PI)
-			posX-=dir*(distanceLeft+distanceRight)/2;
-		else if (rotation == PI/2)
 			posY+=dir*(distanceLeft+distanceRight)/2;
-		else if (rotation == - PI/2)
+		else if (rotation == PI || rotation == -PI)
 			posY-=dir*(distanceLeft+distanceRight)/2;
+		else if (rotation == PI/2)
+			posX+=dir*(distanceLeft+distanceRight)/2;
+		else if (rotation == - PI/2)
+			posX-=dir*(distanceLeft+distanceRight)/2;
 		else
 		{
-			posX+=dir*cosf(rotation)*((distanceLeft+distanceRight)/2);
-			posY+=dir*sinf(rotation)*((distanceLeft+distanceRight)/2);
+			posY+=dir*cosf(rotation)*((distanceLeft+distanceRight)/2);
+			posX+=dir*sinf(rotation)*((distanceLeft+distanceRight)/2);
 		}
 		//manage all phase of movement
 		if (distance <= 0) //completly stop and restore PID
