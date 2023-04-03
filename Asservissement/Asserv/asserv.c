@@ -165,8 +165,8 @@ float move(float distance) //move robot to the distance(m) and return the distan
 	if (timeNow - lastTime >= TIME_REG || timeNow == 0)  //for regular interval
 	{
 		//manage encodeur
-		int valEncodeurLeft = (TIM2->CNT)>>2;
-		int valEncodeurRight = (TIM3->CNT)>>2;
+		int valEncodeurLeft = 0;                         //<- get encodeur left
+		int valEncodeurRight = 0;                        //<- get encodeur right
 
 		int nbTurnsLeft = 0;
 		int nbTurnsRight = 0;
