@@ -1,3 +1,5 @@
+#include <math.h>
+#include <stdio.h>
 
 /*_____Macro_____*/
 
@@ -166,7 +168,7 @@ float move(float distance) //move robot to the distance(m) and return the distan
 	{
 		//manage encodeur
 		int valEncodeurLeft = (TIM2->CNT)>>2;
-		int valEncodeurRight = (TIM3->CNT)>>2;
+		int valEncodeurRight = (TIM5->CNT)>>2;
 
 		int nbTurnsLeft = 0;
 		int nbTurnsRight = 0;
@@ -187,6 +189,8 @@ float move(float distance) //move robot to the distance(m) and return the distan
 		{
 			nbTurnsRight = valencodeurRight-lastTurnsRight;
 		}
+		lastTurnLeft = valEncodeurLeft;
+		lastTurnRight = valEncodeurRight;
 
 		//calcul error 
 		float distanceLeft = PI*WHEEL_DIAG*nbTurnsLeft; //getDistance(nbTurnsLeft);
@@ -279,7 +283,7 @@ float move(float distance) //move robot to the distance(m) and return the distan
 
 
 float rotate(float angle, int dir) //rotate robot in angle(rad) and return the angle left in rad
-{/*
+{
 	//timer for regular pid in sec
 	static float lastTime = HAL_GetTick();
 	float timeSinceStart = HAL_GetTick();
@@ -307,32 +311,34 @@ float rotate(float angle, int dir) //rotate robot in angle(rad) and return the a
 	if (timeNow - lastTime >= TIME_REG || timeNow == 0)  //for regular interval
 	{
 		//manage encodeur
-		int valEncodeurLeft = 0;                         //<- get encodeur left
-		int valEncodeurRight = 0;                        //<- get encodeur right
+		int valEncodeurLeft = (TIME2->CNT)>>2;                       
+		int valEncodeurRight = (TIME5->CNT)>>2;          
 
 		int nbTurnsLeft = 0;
 		int nbTurnsRight = 0;
 
 		if (valEncodeurLeft<0 && lastTurnLeft > 0)
 		{
-			nbTurnsLeft = (INT_MAX-lastTurnLeft)+(valEncodeurLeft-INT_MIN);
+			nbTurnsLeft = abs((INT_MAX-lastTurnLeft)+(valEncodeurLeft-INT_MIN));
 		}
 		else
 		{
-			nbTurnsLeft = valencodeurLeft-lastTurnsLeft;
+			nbTurnsLeft = abs(valencodeurLeft-lastTurnsLeft);
 		}
 		if (valEncodeurRight<0 && lastTurnRight > 0)
 		{
-			nbTurnsRight = (INT_MAX-lastTurnRight)+(valEncodeurRight-INT_MIN);
+			nbTurnsRight = abs((INT_MAX-lastTurnRight)+(valEncodeurRight-INT_MIN));
 		}
 		else
 		{
-			nbTurnsRight = valencodeurRight-lastTurnsRight;
+			nbTurnsRight = abs(valencodeurRight-lastTurnsRight);
 		}
+		lastTurnLeft = valEncodeurLeft;
+		lastTurnRight = valEncodeurRight;
 
 		//calcul error
-		float distanceLeft = PI*WHEEL_DIAG*nbTurnsLeft; //getDistance(nbTurnsLeft);
-		float distanceRight = PI*WHEEL_DIAG*nbTurnsRight; //getDistance(nbTurnsRight);
+		float distanceLeft = PI*WHEEL_DIAG*nbTurnsLeft;
+		float distanceRight = PI*WHEEL_DIAG*nbTurnsRight;
 		float speedLeft = distanceLeft/TIME_REG;
 		float speedRight = distanceRight/TIME_REG;
 		float errorRight = VITESSE_ROTATE_NOW-speedRight;
@@ -342,18 +348,20 @@ float rotate(float angle, int dir) //rotate robot in angle(rad) and return the a
 		RightCommande += computePID(errorRight,speedRight, PID_RIGHT, SET);
 		LeftCommande += computePID(errorLeft,speedLeft, PID_LEFT, SET);
 
-		//give commande to both motor
-		setDuty(&htim1,dir*LeftCommande);
-		setDuty(&htim8,dir*RightCommande);
-
 		//change angle at do and calculate relatif rotation
 		if (dir == LEFT)
 		{
+			//give commande to both motor
+			setDuty(&htim1,-LeftCommande);
+			setDuty(&htim8,RightCommande);
 			angle -= 2*distanceRight/ENTRAXE;
 			rotation -= (2*distanceRight/ENTRAXE);
 		}
 		else
 		{
+			//give commande to both motor
+			setDuty(&htim1,LeftCommande);
+			setDuty(&htim8,-RightCommande);
 			angle -= 2*distanceLeft/ENTRAXE;
 			rotation += (2*distanceLeft/ENTRAXE);
 		}
@@ -405,7 +413,7 @@ float rotate(float angle, int dir) //rotate robot in angle(rad) and return the a
 			VITESSE_ROTATE_NOW = (VITESSE_ROTATE_NOW-COEFF_ROTATE_DECELERATE*VITESSE_ROTATE_DELTA <= VITESSE_ROTATE_MIN? VITESSE_ROTATE_MIN : VITESSE_ROTATE_NOW-COEFF_ROTATE_DECELERATE*VITESSE_ROTATE_DELTA);  //for not stop motor if target not rush
 		}
 		lastTime = timeNow;
-	}*/
+	}
 
 	return angle;
 }
