@@ -20,7 +20,6 @@
 //macro at measured on robot
 #define WHEEL_DIAG 0.12  //in m
 #define ENTRAXE 0.45 //in m
-#define getDistance(rotary) PI*WHEEL_DIAG*rotary
 
 //macro for phase of movement
 #define ACCELERATE 1
@@ -44,7 +43,7 @@ float MOTOR_LIMIT_MIN = 0;   //in % of voltage
 //Distancelimit for start freinage
 float DISTANCE_START_FREINAGE = 0.5;  //in m
 //Anglelimit for start freinage
-float ANGLE_START_FREINAGE = PI/12;   //in rad
+float ANGLE_START_FREINAGE = M_PI/12;   //in rad
 
 //Speed for move and do copy
 float VITESSE_LIMIT = 1;  //in m/s
@@ -67,6 +66,9 @@ float VITESSE_ROTATE_MIN = 0.05;
 //Coeff for decrease speed more quick than accelerate
 float COEFF_DECELERATE = 1.05;
 float COEFF_ROTATE_DECELERATE = 1.05;
+
+int DIR_LEFT = 1;
+int DIR_RIGHT = (-1);
 
 
 /*_____Function_____*/
@@ -202,9 +204,9 @@ float move(float distance, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, T
 			posY+=(distanceLeft+distanceRight)/2;
 		else if (rotation == PI || rotation == -PI)
 			posY-=(distanceLeft+distanceRight)/2;
-		else if (rotation == PI/2)
+		else if (rotation == M_PI/2)
 			posX+=(distanceLeft+distanceRight)/2;
-		else if (rotation == - PI/2)
+		else if (rotation == - M_PI/2)
 			posX-=(distanceLeft+distanceRight)/2;
 		else
 		{
@@ -269,9 +271,11 @@ float move(float distance, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, T
 
 
 
-float rotate(float angle, int dir, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, TIM_HandleTypeDef* htim2, TIM_HandleTypeDef* htim5) //rotate robot in angle(rad) and return the angle left in rad
+float rotate(float angle, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, TIM_HandleTypeDef* htim2, TIM_HandleTypeDef* htim5) //rotate robot in angle(rad) and return the angle left in rad
 {
 	//distance initial
+	int dir = (angle < 0 ? DIR_RIGHT : DIR_LEFT);
+	angle = abs(angle);
 	static float angleInit = 0;
 	static uint32_t lastTime = 0;
     static int first = 0;
@@ -299,8 +303,8 @@ float rotate(float angle, int dir, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* 
 	if (timeNow - lastTime >= TIM_REG || timeNow == 0)  //for regular interval
 	{
 		//manage encodeur
-		int valEncodeurLeft = (TIM2->CNT)>>2;                       
-		int valEncodeurRight = (TIM5->CNT)>>2;          
+		int valEncodeurLeft = (TIM2->CNT)>>2;
+		int valEncodeurRight = (TIM5->CNT)>>2;
 
 		int nbTurnsLeft = 0;
 		int nbTurnsRight = 0;
@@ -325,8 +329,8 @@ float rotate(float angle, int dir, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* 
 		lastTurnsRight = valEncodeurRight;
 
 		//calcul error
-		float distanceLeft = PI*WHEEL_DIAG*nbTurnsLeft;
-		float distanceRight = PI*WHEEL_DIAG*nbTurnsRight;
+		float distanceLeft = M_PI*WHEEL_DIAG*nbTurnsLeft;
+		float distanceRight = M_PI*WHEEL_DIAG*nbTurnsRight;
 		float speedLeft = distanceLeft/TIM_REG;
 		float speedRight = distanceRight/TIM_REG;
 		float errorRight = VITESSE_ROTATE_NOW-speedRight;
@@ -337,7 +341,7 @@ float rotate(float angle, int dir, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* 
 		LeftCommande += computePID(errorLeft,speedLeft, PID_LEFT, SET);
 
 		//change angle at do and calculate relatif rotation
-		if (dir == LEFT)
+		if (dir == DIR_LEFT)
 		{
 			//give commande to both motor
 			setDuty(htim1,-LeftCommande);
@@ -403,6 +407,6 @@ float rotate(float angle, int dir, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* 
 		lastTime = timeNow;
 	}
 
-	return angle;
+	return dir*angle;
 }
 
