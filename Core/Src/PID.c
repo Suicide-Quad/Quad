@@ -131,19 +131,21 @@ float computePID(float error,float input, int direction, int reset)
 
 float move(float distance, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, TIM_HandleTypeDef* htim2, TIM_HandleTypeDef* htim5) //move robot to the distance(m) and return the distance left in m
 {
-	//timer for regular pid in sec
-	static uint32_t lastTime = HAL_GetTick();
-	uint32_t timeSinceStart = HAL_GetTick();
-	uint32_t timeNow = timeSinceStart - lastTime;
-
-	//distance initial
+	//distance initial and lastTime
 	static float distanceInit = 0;
 	static int first = 0;
+	static uint32_t lastTime = 0;
 	if (!first)
 	{
+		uint32_t lastTime = HAL_GetTick();
 		distanceInit = distance;
 		first = 1;
 	}
+
+	//timer for regular pid in sec
+	uint32_t timeSinceStart = HAL_GetTick();
+	uint32_t timeNow = timeSinceStart - lastTime;
+
 
 	//phase of movement: accelerate, stable, decelerate
 	static int phase = ACCELERATE;
@@ -275,19 +277,19 @@ float move(float distance, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, T
 
 float rotate(float angle, int dir, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, TIM_HandleTypeDef* htim2, TIM_HandleTypeDef* htim5) //rotate robot in angle(rad) and return the angle left in rad
 {
-	//timer for regular pid in sec
-	static float lastTime = HAL_GetTick();
-	float timeSinceStart = HAL_GetTick();
-	float timeNow = timeSinceStart - lastTime;
-
 	//distance initial
 	static float angleInit = 0;
-	static int first = 0;
+	static uint32_t lastTime = 0;
 	if (!first)
 	{
+		uint32_t lastTime = HAL_GetTick();
 		angleInit = angle;
 		first = 1;
 	}
+
+	//timer for regular pid in sec
+	uint32_t timeSinceStart = HAL_GetTick();
+	uint32_t timeNow = timeSinceStart - lastTime;
 
 	//phase of movement: accelerate, stable, decelerate
 	static int phase = ACCELERATE;
