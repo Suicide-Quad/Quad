@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "PID.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -83,6 +83,34 @@ static void MX_SPI1_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+/* 
+ * Start the PWM for the motor 
+ */
+
+void Setup_PWM() 
+{
+  HAL_TIM_Base_Start(&htim1);
+  HAL_TIM_Base_Start(&htim8);
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+  HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
+  
+  HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
+  HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_1);
+  // Set the disable pin to HIGH
+  HAL_GPIO_WritePin(MOTOR1_DISABLE_GPIO_Port, MOTOR1_DISABLE_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(MOTOR4_DISABLE_GPIO_Port, MOTOR4_DISABLE_Pin, GPIO_PIN_SET);
+}
+
+/* 
+ * Start the encodeur
+ */
+
+void Setup_Encodeur()
+{
+  HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_ALL);
+  HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -126,15 +154,29 @@ int main(void)
   MX_ADC1_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+  Setup_PWM();
+  Setup_Encodeur();
+
+  int dist = 2;
+  int rot = 0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    HAL_GPIO_TogglePin(GPIOB, LD1_Pin);
-    HAL_Delauy(1000);
+    if (dist!=0)
+    {
+      dist=move(dist, &htim1, &htim8, &htim2, &htim5);
+      rot=(dist==0?PI/2:0);
+    }
+    else if (rot!=0)
+    {
+      rot=rotate(rot, LEFT, &htim1, &htim8, &htim2, &htim5);
+      dist=(rot==0?2:0);
+    }
+    HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
+    //HAL_Delauy(1000);
 
     /* USER CODE END WHILE */
 
