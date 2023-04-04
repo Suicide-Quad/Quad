@@ -32,6 +32,7 @@
 //Timer for make regular PID
 float TIM_REG = 0.01;  //in s
 
+
 //last val encodeur for have same value in  rotation and move
 static int lastTurnsLeft = 0;
 static int lastTurnsRight = 0;
@@ -66,13 +67,6 @@ float VITESSE_ROTATE_MIN = 0.05;
 //Coeff for decrease speed more quick than accelerate
 float COEFF_DECELERATE = 1.05;
 float COEFF_ROTATE_DECELERATE = 1.05;
-//Global position and rotation
-float posX = 0;
-float posY = 0;
-float rotation = 0;
-
-
-
 
 
 /*_____Function_____*/
@@ -280,6 +274,7 @@ float rotate(float angle, int dir, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* 
 	//distance initial
 	static float angleInit = 0;
 	static uint32_t lastTime = 0;
+    static int first = 0;
 	if (!first)
 	{
 		lastTime = HAL_GetTick();
