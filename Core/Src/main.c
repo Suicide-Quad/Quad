@@ -178,9 +178,10 @@ int main(void)
         htim8.Instance->CCR1 = 0;
     }
     */
-    uint8_t Test[] = "Hello World !!!;"; //Data to send
-    HAL_UART_Transmit(&huart2,Test,sizeof(Test),10);// Sending in normal mode
-                                                    //
+    uint8_t Test[] = "12.5:23.4;"; //Data to send
+    uint8_t recept[1];
+    HAL_UART_Transmit(&huart2,Test, 10, 1000);
+    HAL_UART_Receive(&huart2, recept, 1, 1000);
    /* if (dist!=0)
     {
       dist=move(dist, &htim1, &htim8, &htim2, &htim5);
