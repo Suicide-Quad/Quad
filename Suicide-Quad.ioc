@@ -631,10 +631,14 @@ SPI1.VirtualType=VM_MASTER
 TIM1.Channel-PWM\ Generation1\ CH1\ CH1N=TIM_CHANNEL_1
 TIM1.Channel-PWM\ Generation2\ CH2\ CH2N=TIM_CHANNEL_2
 TIM1.Channel-PWM\ Generation3\ CH3\ CH3N=TIM_CHANNEL_3
+<<<<<<< HEAD
 TIM1.IPParameters=Channel-PWM Generation1 CH1 CH1N,Channel-PWM Generation2 CH2 CH2N,Channel-PWM Generation3 CH3 CH3N,Period,Prescaler,Pulse-PWM Generation1 CH1 CH1N
 TIM1.Period=1000-1
 TIM1.Prescaler=180-1
 TIM1.Pulse-PWM\ Generation1\ CH1\ CH1N=250
+=======
+TIM1.IPParameters=Channel-PWM Generation1 CH1 CH1N,Channel-PWM Generation2 CH2 CH2N,Channel-PWM Generation3 CH3 CH3N
+>>>>>>> 6fa61c1 ([PID] Config PIN)
 TIM2.AutoReloadPreload=TIM_AUTORELOAD_PRELOAD_ENABLE
 TIM2.EncoderMode=TIM_ENCODERMODE_TI12
 TIM2.IC1Filter=10
@@ -645,7 +649,12 @@ TIM5.AutoReloadPreload=TIM_AUTORELOAD_PRELOAD_ENABLE
 TIM5.EncoderMode=TIM_ENCODERMODE_TI12
 TIM5.IC1Filter=10
 TIM5.IC2Filter=10
+<<<<<<< HEAD
 TIM5.IPParameters=AutoReloadPreload,EncoderMode,IC1Filter,IC2Filter
+=======
+TIM5.IPParameters=Period,AutoReloadPreload,IC1Filter,IC2Filter,EncoderMode
+TIM5.Period=65535
+>>>>>>> 6fa61c1 ([PID] Config PIN)
 TIM8.Channel-PWM\ Generation1\ CH1\ CH1N=TIM_CHANNEL_1
 TIM8.IPParameters=Channel-PWM Generation1 CH1 CH1N,Period,Prescaler,Pulse-PWM Generation1 CH1 CH1N
 TIM8.Period=1000-1
