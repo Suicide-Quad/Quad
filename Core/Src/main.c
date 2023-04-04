@@ -87,14 +87,7 @@ static void MX_SPI1_Init(void);
 
 /* 
  * Start the PWM for the motor 
-:w
-
-
-
-
-//
- */
-
+*/
 void Setup_PWM() 
 {
   //HAL_TIM_Base_Start(&htim1);
@@ -167,13 +160,28 @@ int main(void)
 
   int dist = 2;
   int rot = 0;
+  htim1.Instance->CCR1 = 300;
+  htim8.Instance->CCR1 = 300;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    if (dist!=0)
+    /*
+    htim1.Instance->CCR1+= 1;
+    htim8.Instance->CCR1+= 1;
+    if (htim1.Instance->CCR1 > 500) 
+    {
+        htim1.Instance->CCR1 = 0;
+        htim8.Instance->CCR1 = 0;
+    }
+    */
+    uint8_t Test[] = "Hello World !!!;"; //Data to send
+    HAL_UART_Transmit(&huart2,Test,sizeof(Test),10);// Sending in normal mode
+                                                    //
+   /* if (dist!=0)
     {
       dist=move(dist, &htim1, &htim8, &htim2, &htim5);
       rot=(dist==0?M_PI/2:0);
@@ -183,8 +191,8 @@ int main(void)
       rot=rotate(rot, &htim1, &htim8, &htim2, &htim5);
       dist=(rot==0?2:0);
     }
-    HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
-    //HAL_Delauy(1000);
+    */
+
 
     /* USER CODE END WHILE */
 
@@ -734,7 +742,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 115200;
+  huart2.Init.BaudRate = 9600;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
