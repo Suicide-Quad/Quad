@@ -137,7 +137,7 @@ float move(float distance, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, T
 	static uint32_t lastTime = 0;
 	if (!first)
 	{
-		uint32_t lastTime = HAL_GetTick();
+		lastTime = HAL_GetTick();
 		distanceInit = distance;
 		first = 1;
 	}
@@ -282,7 +282,7 @@ float rotate(float angle, int dir, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* 
 	static uint32_t lastTime = 0;
 	if (!first)
 	{
-		uint32_t lastTime = HAL_GetTick();
+		lastTime = HAL_GetTick();
 		angleInit = angle;
 		first = 1;
 	}
