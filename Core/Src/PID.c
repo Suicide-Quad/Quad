@@ -37,7 +37,7 @@ static int lastTurnsLeft = 0;
 static int lastTurnsRight = 0;
 
 //Motor Statistic
-float MOTOR_LIMIT_MAX = 100;  //in % of voltage
+float MOTOR_LIMIT_MAX = 20;  //in % of voltage
 float MOTOR_LIMIT_MIN = 0;   //in % of voltage
 
 //Distancelimit for start freinage
@@ -78,15 +78,15 @@ float rotation;
 
 uint32_t crossProduct(float pourcentage)
 {
-	uint32_t maxprescaler = 65535;
+	uint32_t maxprescaler = 1000;
 	uint32_t ret = pourcentage*maxprescaler/100;
 	return ret;
 }
 
-void setDuty(TIM_HandleTypeDef* tim,float pourcent)
+void setDuty(TIM_HandleTypeDef* htim,float pourcent)
 {
-	uint32_t newv = crossProduct(pourcent);
-	tim->Init.Prescaler = newv;
+    uint32_t newv = crossProduct(pourcent);
+    htim->Instance->CCR1 = newv;
 }
 
 
