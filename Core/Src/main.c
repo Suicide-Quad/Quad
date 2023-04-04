@@ -22,6 +22,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "PID.h"
+#include <math.h>
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -168,11 +170,11 @@ int main(void)
     if (dist!=0)
     {
       dist=move(dist, &htim1, &htim8, &htim2, &htim5);
-      rot=(dist==0?PI/2:0);
+      rot=(dist==0?M_PI/2:0);
     }
     else if (rot!=0)
     {
-      rot=rotate(rot, LEFT, &htim1, &htim8, &htim2, &htim5);
+      rot=rotate(rot, &htim1, &htim8, &htim2, &htim5);
       dist=(rot==0?2:0);
     }
     HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
