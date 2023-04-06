@@ -179,6 +179,7 @@ int main(void)
         htim8.Instance->CCR1 = 0;
     }
     */
+	  /*
     if (dist!=0)
     {
       dist=move(dist, &htim1, &htim8, &htim2, &htim5);
@@ -188,7 +189,9 @@ int main(void)
     {
       rot=rotate(rot, &htim1, &htim8, &htim2, &htim5);
       dist=(rot==0?2:0);
-    }
+    }*/
+	  debug(&huart2,"Right",(int)(TIM2->CCR1));
+	  debug(&huart2,"Left",(int)(TIM5->CCR1));
 
 
     /* USER CODE END WHILE */
