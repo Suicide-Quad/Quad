@@ -128,7 +128,7 @@ float computePID(float error,float input, int direction, int reset)
 	return output;
 }
 
-float move(float distance, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, TIM_HandleTypeDef* htim2, TIM_HandleTypeDef* htim5) //move robot to the distance(m) and return the distance left in m
+float move(float distance, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, TIM_HandleTypeDef* htim2, TIM_HandleTypeDef* htim5, UART_HandleTypeDef* huart2) //move robot to the distance(m) and return the distance left in m
 {
 	//distance initial and lastTime
 	static float distanceInit = 0;
@@ -142,8 +142,7 @@ float move(float distance, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, T
 	}
 
 	//timer for regular pid in sec
-	uint32_t timeSinceStart = HAL_GetTick();
-	uint32_t timeNow = timeSinceStart - lastTime;
+	uint32_t timeNow = HAL_GetTick();
 
 
 	//phase of movement: accelerate, stable, decelerate
@@ -158,6 +157,9 @@ float move(float distance, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, T
 
 	if (timeNow - lastTime >= TIM_REG || timeNow == 0)  //for regular interval
 	{
+		debug(huart2,"TimeNow",timeNow);
+		debug(huart2,"Distance_at_do",distance);
+
 		//manage encodeur
 		int valEncodeurLeft = (TIM2->CNT)>>2;
 		int valEncodeurRight = (TIM5->CNT)>>2;
@@ -165,22 +167,28 @@ float move(float distance, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, T
 		int nbTurnsLeft = 0;
 		int nbTurnsRight = 0;
 
-		if (valEncodeurLeft<0 && lastTurnsLeft > 0)
+		if (lastTurnsLeft < valEncodeurLeft)
 		{
-			nbTurnsLeft = (INT_MAX-lastTurnsLeft)+(valEncodeurLeft-INT_MIN);
+			nbTurnsLeft = lastTurnsLeft+(INT_MAX-valEncodeurLeft);
 		}
 		else
 		{
-			nbTurnsLeft = valEncodeurLeft-lastTurnsLeft;
+			nbTurnsLeft = lastTurnsLeft-valEncodeurLeft;
 		}
-		if (valEncodeurRight<0 && lastTurnsRight > 0)
+		if (lastTurnsRight < valEncodeurRight)
 		{
-			nbTurnsRight = (INT_MAX-lastTurnsRight)+(valEncodeurRight-INT_MIN);
+			nbTurnsRight = lastTurnsRight+(INT_MAX-valEncodeurRight);
 		}
 		else
 		{
-			nbTurnsRight = valEncodeurRight-lastTurnsRight;
+			nbTurnsLeft = lastTurnsRight-valEncodeurRight;
 		}
+
+		debug(huart2,"valEncodeurRight",valEncodeurRight);
+		debug(huart2,"valEncodeurLeft",valEncodeurRight);
+		debug(huart2,"nbTurnsRight",nbTurnsRight);
+		debug(huart2,"nbTurnsLeft",nbTurnsLeft);
+
 		lastTurnsLeft = valEncodeurLeft;
 		lastTurnsRight = valEncodeurRight;
 
@@ -192,9 +200,17 @@ float move(float distance, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, T
 		float errorRight = VITESSE_NOW-speedRight;
 		float errorLeft = VITESSE_NOW-speedLeft;
 
+		debug(huart2,"errorRight",errorRight);
+		debug(huart2,"errorLeft",errorLeft);
+		debug(huart2,"speedRight",speedRight);
+		debug(huart2,"speedLeft",speedLeft);
+
 		//comput both pid
 		RightCommande += computePID(errorRight,speedRight, PID_RIGHT, SET);
 		LeftCommande += computePID(errorLeft,speedLeft, PID_LEFT, SET);
+
+		debug(huart2,"rightCommande",RightCommande);
+		debug(huart2,"leftCommande",LeftCommande);
 
 		//give commande to both motor
 		setDuty(htim1,LeftCommande);
@@ -235,7 +251,7 @@ float move(float distance, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, T
 			first = 0;
 		}
 		else if (phase == ACCELERATE)
-		{
+	{
 			if (distance <= distanceInit/2)  //not need stable phase
 			{
 				phase = DECELERATE;
@@ -264,6 +280,7 @@ float move(float distance, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, T
 			VITESSE_NOW = (VITESSE_NOW-COEFF_DECELERATE*VITESSE_DELTA <= VITESSE_MIN? VITESSE_MIN : VITESSE_NOW-COEFF_DECELERATE*VITESSE_DELTA);  //for not stop motor if target not rush
 		}
 
+		debug(huart2,"Distance_at_end",distance);
 		lastTime = timeNow;
 	}
 
@@ -274,7 +291,7 @@ float move(float distance, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, T
 
 
 
-float rotate(float angle, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, TIM_HandleTypeDef* htim2, TIM_HandleTypeDef* htim5) //rotate robot in angle(rad) and return the angle left in rad
+float rotate(float angle, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, TIM_HandleTypeDef* htim2, TIM_HandleTypeDef* htim5, UART_HandleTypeDef* huart2) //rotate robot in angle(rad) and return the angle left in rad
 {
 	//distance initial
 	int dir = (angle < 0 ? DIR_RIGHT : DIR_LEFT);
@@ -290,8 +307,7 @@ float rotate(float angle, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, TI
 	}
 
 	//timer for regular pid in sec
-	uint32_t timeSinceStart = HAL_GetTick();
-	uint32_t timeNow = timeSinceStart - lastTime;
+	uint32_t timeNow = HAL_GetTick();
 
 	//phase of movement: accelerate, stable, decelerate
 	static int phase = ACCELERATE;
@@ -305,6 +321,9 @@ float rotate(float angle, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, TI
 
 	if (timeNow - lastTime >= TIM_REG || timeNow == 0)  //for regular interval
 	{
+		debug(huart2,"TimeNow",timeNow);
+		debug(huart2,"Angle_at_do",angle);
+
 		//manage encodeur
 		int valEncodeurLeft = (TIM2->CNT)>>2;
 		int valEncodeurRight = (TIM5->CNT)>>2;
@@ -312,22 +331,28 @@ float rotate(float angle, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, TI
 		int nbTurnsLeft = 0;
 		int nbTurnsRight = 0;
 
-		if (valEncodeurLeft<0 && lastTurnsLeft > 0)
+		if (lastTurnsLeft < valEncodeurLeft)
 		{
-			nbTurnsLeft = abs((INT_MAX-lastTurnsLeft)+(valEncodeurLeft-INT_MIN));
+			nbTurnsLeft = lastTurnsLeft+(INT_MAX-valEncodeurLeft);
 		}
 		else
 		{
-			nbTurnsLeft = abs(valEncodeurLeft-lastTurnsLeft);
+			nbTurnsLeft = lastTurnsLeft-valEncodeurLeft;
 		}
-		if (valEncodeurRight<0 && lastTurnsRight > 0)
+		if (lastTurnsRight < valEncodeurRight)
 		{
-			nbTurnsRight = abs((INT_MAX-lastTurnsRight)+(valEncodeurRight-INT_MIN));
+			nbTurnsRight = lastTurnsRight+(INT_MAX-valEncodeurRight);
 		}
 		else
 		{
-			nbTurnsRight = abs(valEncodeurRight-lastTurnsRight);
+			nbTurnsLeft = lastTurnsRight-valEncodeurRight;
 		}
+
+		debug(huart2,"valEncodeurRight",valEncodeurRight);
+		debug(huart2,"valEncodeurLeft",valEncodeurRight);
+		debug(huart2,"nbTurnsRight",nbTurnsRight);
+		debug(huart2,"nbTurnsLeft",nbTurnsLeft);
+
 		lastTurnsLeft = valEncodeurLeft;
 		lastTurnsRight = valEncodeurRight;
 
@@ -340,8 +365,16 @@ float rotate(float angle, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, TI
 		float errorLeft = VITESSE_ROTATE_NOW-speedLeft;
 
 		//comput both pid
+		debug(huart2,"errorRight",errorRight);
+		debug(huart2,"errorLeft",errorLeft);
+		debug(huart2,"speedRight",speedRight);
+		debug(huart2,"speedLeft",speedLeft);
+
 		RightCommande += computePID(errorRight,speedRight, PID_RIGHT, SET);
 		LeftCommande += computePID(errorLeft,speedLeft, PID_LEFT, SET);
+
+		debug(huart2,"rightCommande",RightCommande);
+		debug(huart2,"leftCommande",LeftCommande);
 
 		//change angle at do and calculate relatif rotation
 		if (dir == DIR_LEFT)
@@ -407,6 +440,9 @@ float rotate(float angle, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, TI
 		{
 			VITESSE_ROTATE_NOW = (VITESSE_ROTATE_NOW-COEFF_ROTATE_DECELERATE*VITESSE_ROTATE_DELTA <= VITESSE_ROTATE_MIN? VITESSE_ROTATE_MIN : VITESSE_ROTATE_NOW-COEFF_ROTATE_DECELERATE*VITESSE_ROTATE_DELTA);  //for not stop motor if target not rush
 		}
+
+		debug(huart2,"Angle_at_end",angle);
+
 		lastTime = timeNow;
 	}
 
