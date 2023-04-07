@@ -37,7 +37,7 @@ static int lastTurnsLeft = 0;
 static int lastTurnsRight = 0;
 
 //Motor Statistic
-float MOTOR_LIMIT_MAX = 100;  //in % of voltage
+float MOTOR_LIMIT_MAX = 20;  //in % of voltage
 float MOTOR_LIMIT_MIN = 0;   //in % of voltage
 
 //Distancelimit for start freinage
@@ -71,19 +71,22 @@ int DIR_LEFT = 1;
 int DIR_RIGHT = (-1);
 
 
+float posX;
+float posY;
+float rotation;
 /*_____Function_____*/
 
 uint32_t crossProduct(float pourcentage)
 {
-	uint32_t maxprescaler = 65535;
+	uint32_t maxprescaler = 1000;
 	uint32_t ret = pourcentage*maxprescaler/100;
 	return ret;
 }
 
-void setDuty(TIM_HandleTypeDef* tim,float pourcent)
+void setDuty(TIM_HandleTypeDef* htim,float pourcent)
 {
-	uint32_t newv = crossProduct(pourcent);
-	tim->Init.Prescaler = newv;
+    uint32_t newv = crossProduct(pourcent);
+    htim->Instance->CCR1 = newv;
 }
 
 
@@ -182,8 +185,8 @@ float move(float distance, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, T
 		lastTurnsRight = valEncodeurRight;
 
 		//calcul error 
-		float distanceLeft = PI*WHEEL_DIAG*nbTurnsLeft; //getDistance(nbTurnsLeft);
-		float distanceRight = PI*WHEEL_DIAG*nbTurnsRight; //getDistance(nbTurnsRight);
+		float distanceLeft = M_PI*WHEEL_DIAG*nbTurnsLeft; //getDistance(nbTurnsLeft);
+		float distanceRight = M_PI*WHEEL_DIAG*nbTurnsRight; //getDistance(nbTurnsRight);
 		float speedLeft = distanceLeft/TIM_REG;
 		float speedRight = distanceRight/TIM_REG;
 		float errorRight = VITESSE_NOW-speedRight;
@@ -202,7 +205,7 @@ float move(float distance, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, T
 		//calculated coord
 		if (rotation == 0)
 			posY+=(distanceLeft+distanceRight)/2;
-		else if (rotation == PI || rotation == -PI)
+		else if (rotation == M_PI || rotation == -M_PI)
 			posY-=(distanceLeft+distanceRight)/2;
 		else if (rotation == M_PI/2)
 			posX+=(distanceLeft+distanceRight)/2;
