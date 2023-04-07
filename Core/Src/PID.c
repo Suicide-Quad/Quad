@@ -157,8 +157,8 @@ float move(float distance, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, T
 
 	if (timeNow - lastTime >= TIM_REG || timeNow == 0)  //for regular interval
 	{
-		debug(huart2,"TimeNow",timeNow);
-		debug(huart2,"Distance_at_do",distance);
+		sendInt(huart2,"TimeNow",timeNow);
+		sendFloat(huart2,"Distance_at_do",distance);
 
 		//manage encodeur
 		int valEncodeurLeft = (TIM2->CNT)>>2;
@@ -184,10 +184,10 @@ float move(float distance, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, T
 			nbTurnsLeft = lastTurnsRight-valEncodeurRight;
 		}
 
-		debug(huart2,"valEncodeurRight",valEncodeurRight);
-		debug(huart2,"valEncodeurLeft",valEncodeurRight);
-		debug(huart2,"nbTurnsRight",nbTurnsRight);
-		debug(huart2,"nbTurnsLeft",nbTurnsLeft);
+		sendFloat(huart2,"valEncodeurRight",valEncodeurRight);
+		sendFloat(huart2,"valEncodeurLeft",valEncodeurRight);
+		sendFloat(huart2,"nbTurnsRight",nbTurnsRight);
+		sendFloat(huart2,"nbTurnsLeft",nbTurnsLeft);
 
 		lastTurnsLeft = valEncodeurLeft;
 		lastTurnsRight = valEncodeurRight;
@@ -200,17 +200,17 @@ float move(float distance, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, T
 		float errorRight = VITESSE_NOW-speedRight;
 		float errorLeft = VITESSE_NOW-speedLeft;
 
-		debug(huart2,"errorRight",errorRight);
-		debug(huart2,"errorLeft",errorLeft);
-		debug(huart2,"speedRight",speedRight);
-		debug(huart2,"speedLeft",speedLeft);
+		sendFloat(huart2,"errorRight",errorRight);
+		sendFloat(huart2,"errorLeft",errorLeft);
+		sendFloat(huart2,"speedRight",speedRight);
+		sendFloat(huart2,"speedLeft",speedLeft);
 
 		//comput both pid
 		RightCommande += computePID(errorRight,speedRight, PID_RIGHT, SET);
 		LeftCommande += computePID(errorLeft,speedLeft, PID_LEFT, SET);
 
-		debug(huart2,"rightCommande",RightCommande);
-		debug(huart2,"leftCommande",LeftCommande);
+		sendFloat(huart2,"rightCommande",RightCommande);
+		sendFloat(huart2,"leftCommande",LeftCommande);
 
 		//give commande to both motor
 		setDuty(htim1,LeftCommande);
@@ -280,7 +280,7 @@ float move(float distance, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, T
 			VITESSE_NOW = (VITESSE_NOW-COEFF_DECELERATE*VITESSE_DELTA <= VITESSE_MIN? VITESSE_MIN : VITESSE_NOW-COEFF_DECELERATE*VITESSE_DELTA);  //for not stop motor if target not rush
 		}
 
-		debug(huart2,"Distance_at_end",distance);
+		sendFloat(huart2,"Distance_at_end",distance);
 		lastTime = timeNow;
 	}
 
@@ -321,8 +321,8 @@ float rotate(float angle, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, TI
 
 	if (timeNow - lastTime >= TIM_REG || timeNow == 0)  //for regular interval
 	{
-		debug(huart2,"TimeNow",timeNow);
-		debug(huart2,"Angle_at_do",angle);
+		sendFloat(huart2,"TimeNow",timeNow);
+		sendFloat(huart2,"Angle_at_do",angle);
 
 		//manage encodeur
 		int valEncodeurLeft = (TIM2->CNT)>>2;
@@ -348,10 +348,10 @@ float rotate(float angle, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, TI
 			nbTurnsLeft = lastTurnsRight-valEncodeurRight;
 		}
 
-		debug(huart2,"valEncodeurRight",valEncodeurRight);
-		debug(huart2,"valEncodeurLeft",valEncodeurRight);
-		debug(huart2,"nbTurnsRight",nbTurnsRight);
-		debug(huart2,"nbTurnsLeft",nbTurnsLeft);
+		sendFloat(huart2,"valEncodeurRight",valEncodeurRight);
+		sendFloat(huart2,"valEncodeurLeft",valEncodeurRight);
+		sendFloat(huart2,"nbTurnsRight",nbTurnsRight);
+		sendFloat(huart2,"nbTurnsLeft",nbTurnsLeft);
 
 		lastTurnsLeft = valEncodeurLeft;
 		lastTurnsRight = valEncodeurRight;
@@ -365,16 +365,16 @@ float rotate(float angle, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, TI
 		float errorLeft = VITESSE_ROTATE_NOW-speedLeft;
 
 		//comput both pid
-		debug(huart2,"errorRight",errorRight);
-		debug(huart2,"errorLeft",errorLeft);
-		debug(huart2,"speedRight",speedRight);
-		debug(huart2,"speedLeft",speedLeft);
+		sendFloat(huart2,"errorRight",errorRight);
+		sendFloat(huart2,"errorLeft",errorLeft);
+		sendFloat(huart2,"speedRight",speedRight);
+		sendFloat(huart2,"speedLeft",speedLeft);
 
 		RightCommande += computePID(errorRight,speedRight, PID_RIGHT, SET);
 		LeftCommande += computePID(errorLeft,speedLeft, PID_LEFT, SET);
 
-		debug(huart2,"rightCommande",RightCommande);
-		debug(huart2,"leftCommande",LeftCommande);
+		sendFloat(huart2,"rightCommande",RightCommande);
+		sendFloat(huart2,"leftCommande",LeftCommande);
 
 		//change angle at do and calculate relatif rotation
 		if (dir == DIR_LEFT)
@@ -441,7 +441,7 @@ float rotate(float angle, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, TI
 			VITESSE_ROTATE_NOW = (VITESSE_ROTATE_NOW-COEFF_ROTATE_DECELERATE*VITESSE_ROTATE_DELTA <= VITESSE_ROTATE_MIN? VITESSE_ROTATE_MIN : VITESSE_ROTATE_NOW-COEFF_ROTATE_DECELERATE*VITESSE_ROTATE_DELTA);  //for not stop motor if target not rush
 		}
 
-		debug(huart2,"Angle_at_end",angle);
+		sendFloat(huart2,"Angle_at_end",angle);
 
 		lastTime = timeNow;
 	}
