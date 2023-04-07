@@ -161,8 +161,6 @@ int main(void)
 
   int dist = 2;
   int rot = 0;
-  htim1.Instance->CCR1 = 300;
-  htim8.Instance->CCR1 = 300;
 
   /* USER CODE END 2 */
 
@@ -179,19 +177,16 @@ int main(void)
         htim8.Instance->CCR1 = 0;
     }
     */
-	  /*
     if (dist!=0)
     {
-      dist=move(dist, &htim1, &htim8, &htim2, &htim5);
+      dist=move(dist, &htim1, &htim8, &htim2, &htim5, &huart2);
       rot=(dist==0?M_PI/2:0);
     }
     else if (rot!=0)
     {
-      rot=rotate(rot, &htim1, &htim8, &htim2, &htim5);
+      rot=rotate(rot, &htim1, &htim8, &htim2, &htim5, &huart2);
       dist=(rot==0?2:0);
-    }*/
-	  sendInt(&huart2,"Right",(int)(TIM2->CCR1));
-	  sendInt(&huart2,"Left",(int)(TIM5->CCR1));
+    }
 
 
     /* USER CODE END WHILE */

@@ -1,5 +1,5 @@
 #include "debug.h"
-
+#define TIME_OUT 100
 uint8_t checksum(char* msg)
 {
 	uint8_t sum = 0;
@@ -31,7 +31,7 @@ void sendInt(UART_HandleTypeDef* huart2, char* msg, int value)
 	uint8_t msg1 [1024];
 	sprintf((char*)msg1,"%s;%d&",(char*)msg0,sum);
 	int message_size = strlen((char*)msg1);
-	HAL_UART_Transmit(huart2,msg1, message_size, 1000);
+	HAL_UART_Transmit(huart2,msg1, message_size, TIME_OUT);
     uint8_t recept[1];
-    HAL_UART_Receive(huart2, recept, 1, 1000);
+    HAL_UART_Receive(huart2, recept, 1, TIME_OUT);
 }
