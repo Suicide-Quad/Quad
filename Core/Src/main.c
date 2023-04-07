@@ -87,14 +87,7 @@ static void MX_SPI1_Init(void);
 
 /* 
  * Start the PWM for the motor 
-:w
-
-
-
-
-//
- */
-
+*/
 void Setup_PWM() 
 {
   //HAL_TIM_Base_Start(&htim1);
@@ -167,13 +160,29 @@ int main(void)
 
   int dist = 2;
   int rot = 0;
+  htim1.Instance->CCR1 = 300;
+  htim8.Instance->CCR1 = 300;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    if (dist!=0)
+    /*
+    htim1.Instance->CCR1+= 1;
+    htim8.Instance->CCR1+= 1;
+    if (htim1.Instance->CCR1 > 500) 
+    {
+        htim1.Instance->CCR1 = 0;
+        htim8.Instance->CCR1 = 0;
+    }
+    */
+    uint8_t Test[] = "12.5:23.4;"; //Data to send
+    uint8_t recept[1];
+    HAL_UART_Transmit(&huart2,Test, 10, 1000);
+    HAL_UART_Receive(&huart2, recept, 1, 1000);
+   /* if (dist!=0)
     {
       dist=move(dist, &htim1, &htim8, &htim2, &htim5);
       rot=(dist==0?M_PI/2:0);
@@ -183,8 +192,8 @@ int main(void)
       rot=rotate(rot, &htim1, &htim8, &htim2, &htim5);
       dist=(rot==0?2:0);
     }
-    HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
-    //HAL_Delauy(1000);
+    */
+
 
     /* USER CODE END WHILE */
 
@@ -615,7 +624,7 @@ static void MX_TIM5_Init(void)
   htim5.Instance = TIM5;
   htim5.Init.Prescaler = 0;
   htim5.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim5.Init.Period = 65535;
+  htim5.Init.Period = 4294967295;
   htim5.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim5.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   sConfig.EncoderMode = TIM_ENCODERMODE_TI12;
@@ -734,7 +743,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 115200;
+  huart2.Init.BaudRate = 9600;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
