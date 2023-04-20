@@ -177,16 +177,8 @@ int main(void)
         htim8.Instance->CCR1 = 0;
     }
     */
-    if (dist!=0)
-    {
-      dist=move(dist, &htim1, &htim8, &htim2, &htim5, &huart2);
-      rot=(dist==0?M_PI/2:0);
-    }
-    else if (rot!=0)
-    {
-      rot=rotate(rot, &htim1, &htim8, &htim2, &htim5, &huart2);
-      dist=(rot==0?2:0);
-    }
+    if (dist > 0)
+		dist = move(dist, &htim1, &htim8, &htim2, &htim5, &huart2);
 
 
     /* USER CODE END WHILE */

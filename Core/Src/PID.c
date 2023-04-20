@@ -157,8 +157,8 @@ float move(float distance, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, T
 
 	if (timeNow - lastTime >= TIM_REG || timeNow == 0)  //for regular interval
 	{
-		debug(huart2,"TimeNow",timeNow);
-		debug(huart2,"Distance_at_do",distance);
+		//debug(huart2,"TimeNow",timeNow);
+		//debug(huart2,"Distance_at_do",distance);
 
 		//manage encodeur
 		int valEncodeurLeft = (TIM2->CNT)>>2;
@@ -200,6 +200,8 @@ float move(float distance, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, T
 		float errorRight = VITESSE_NOW-speedRight;
 		float errorLeft = VITESSE_NOW-speedLeft;
 
+		debug(huart2,"distanceLeft",distanceLeft);
+		debug(huart2,"distanceRight",distanceRight);
 		debug(huart2,"errorRight",errorRight);
 		debug(huart2,"errorLeft",errorLeft);
 		debug(huart2,"speedRight",speedRight);
@@ -280,7 +282,7 @@ float move(float distance, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim8, T
 			VITESSE_NOW = (VITESSE_NOW-COEFF_DECELERATE*VITESSE_DELTA <= VITESSE_MIN? VITESSE_MIN : VITESSE_NOW-COEFF_DECELERATE*VITESSE_DELTA);  //for not stop motor if target not rush
 		}
 
-		debug(huart2,"Distance_at_end",distance);
+		//debug(huart2,"Distance_at_end",distance);
 		lastTime = timeNow;
 	}
 
