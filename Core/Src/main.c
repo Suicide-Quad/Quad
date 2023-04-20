@@ -179,6 +179,12 @@ int main(void)
     */
     if (dist > 0)
 		dist = move(dist, &htim1, &htim8, &htim2, &htim5, &huart2);
+	else 
+	{
+		sendFloat(&huart2,"End",1.1);
+		move(0,  &htim1, &htim8, &htim2, &htim5, &huart2);
+	}
+
 
 
     /* USER CODE END WHILE */
