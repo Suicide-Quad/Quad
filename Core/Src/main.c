@@ -21,10 +21,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "PID.h"
 #include "debug.h"
 #include <math.h>
-
+#include "utils.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -38,7 +37,6 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -87,31 +85,11 @@ static void MX_SPI1_Init(void);
 /* USER CODE BEGIN 0 */
 
 /* 
- * Start the PWM for the motor 
-*/
-void Setup_PWM() 
-{
-  //HAL_TIM_Base_Start(&htim1);
-  //HAL_TIM_Base_Start(&htim8);
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-  HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
-  
-  HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
-  HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_1);
-  // Set the disable pin to HIGH
-  HAL_GPIO_WritePin(MOTOR1_DISABLE_GPIO_Port, MOTOR1_DISABLE_Pin, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(MOTOR4_DISABLE_GPIO_Port, MOTOR4_DISABLE_Pin, GPIO_PIN_SET);
-}
-
-/* 
  * Start the encodeur
  */
 
 void Setup_Encodeur()
 {
-  HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_ALL);
-  HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
-}
 
 /* USER CODE END 0 */
 
