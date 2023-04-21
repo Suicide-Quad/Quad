@@ -5,10 +5,10 @@
 TIM_HandleTypeDef* pwmMotorLeft;
 TIM_HandleTypeDef* pwmMotorRight;
 
-void initPWM(TIM_HandleTypeDef* htimLeft, TIM_HandleTypeDef* htim2)
+void initPWM(TIM_HandleTypeDef* htimLeft, TIM_HandleTypeDef* htimRight)
 {
     pwmMotorLeft = htimLeft;
-    pwmMotorRight = htim2;
+    pwmMotorRight = htimRight;
 
     HAL_TIM_PWM_Start(htimLeft, TIM_CHANNEL_1);
     HAL_TIMEx_PWMN_Start(htimLeft, TIM_CHANNEL_1);
@@ -21,19 +21,18 @@ void initPWM(TIM_HandleTypeDef* htimLeft, TIM_HandleTypeDef* htim2)
 } 
 
 
-void setPWM(enum Motor motor, double correction)
+void setPWM(enum Motor motor, double command)
 {
-    TIM_HandleTypeDef* htim;
+    TIM_HandleTypeDef* htimPWM;
     if (motor ==  LEFT)
     {
-        htim = pwmMotorLeft;
+        htimPWM = pwmMotorLeft;
     }
-    else if (motor == RIGHT)
+    else 
     {
-        htim = pwmMotorRight;
+        htimPWM = pwmMotorRight;
     }
-    // TODO : Period = 2048
-    float value = (CLAMP(-100.0F, DC, 100.0F) / 2 + 50.0F) / 100.0F * htim->Init.Period;
-    __HAL_TIM_SET_COMPARE(htim, TIM_CHANNEL_1, value); 
+    float value = (CLAMP(-100.0F, command, 100.0F) / 2 + 50.0F) / 100.0F * htimPWM->Init.Period;
+    __HAL_TIM_SET_COMPARE(htimPWM, TIM_CHANNEL_1, value); 
 }
 
