@@ -27,12 +27,12 @@ void initServo()
 void servo(double measureLinear, double measureAngular, double orderLinear, double orderAngular)
 {
     // TODO : double to struct 
-    PolarSpeed polarSpeed;
+    PolarSpeed commandSpeed;
     //TODO : Polar to command 
-    polarSpeed.linear = computePid(measureLinear, orderLinear, &servoLinear);
-    polarSpeed.angular = computePid(measureAngular, orderAngular, &servoAngular);   
+    commandSpeed.linear = computePid(measureLinear, orderLinear, &servoLinear);
+    commandSpeed.angular = computePid(measureAngular, orderAngular, &servoAngular);   
 
-    MotorSpeed motorSpeed = convertPolarSpeed(polarSpeed);
+    MotorSpeed motorSpeed = convertPolarSpeed(commandSpeed);
 
     setPWM(RIGHT, motorSpeed.right);
     setPWM(LEFT, motorSpeed.left);
