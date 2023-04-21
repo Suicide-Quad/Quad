@@ -11,6 +11,10 @@ Pour rappel, nous avons pour objectif de créer un robot qui map un labyrinthe. 
 - Mecanique
 - Server
 
+## Organisation
+
+[Trello][https://trello.com/b/Z3yQVrwn/suicide-quad]
+
 ## Contribution
 
 <a href = "https://github.com/Tanu-N-Prabhu/Python/graphs/contributors">
