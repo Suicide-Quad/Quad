@@ -1,18 +1,19 @@
 #ifndef PID
 #define PID
 
-struct pidController 
+typedef struct pidControllerStruct
 {
     double Kp;
     double Ki;
     double Kd;
     double errorLast;
     double errorTotal;
-}
 
-// Retourne la correction neccesaire
-pidController* initPid(double Kp, double Ki, double Kd);
+} pidController;
 
-double pidCorrection(double measure, double order, pidController* controller);
+// Retourne la command neccesaire
+pidController initPid(double Kp, double Ki, double Kd);
+
+double computePid(double measure, double order, pidController* controller);
 
 #endif 
