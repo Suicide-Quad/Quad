@@ -1,7 +1,8 @@
-#include "motor.h"
 
 #ifndef _PWM_H
 #define _PWM_H
+#include "main.h"
+#include "motor.h"
 
 enum Motor
 {
