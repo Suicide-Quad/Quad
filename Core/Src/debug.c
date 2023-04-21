@@ -9,7 +9,7 @@ void initDebug(UART_HandleTypeDef* huartD)
 
 void sendIntDebug(char* msg, int value)
 {
-    uint8_t buffer[64];
+    uint8_t buffer[BUFF_SIZE];
     memset(buffer, '\0', sizeof(buffer));
     sprintf((char *)buffer, "%s  %d \r\n", msg, value);
     if (huartDebug != NULL)

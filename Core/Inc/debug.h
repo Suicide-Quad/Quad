@@ -3,7 +3,7 @@
 #include "main.h"
 #include <string.h>
 #include <stdio.h>
-#define BUFF_SIZE 258
+#define BUFF_SIZE 64
 #define DEBUG_TIME_OUT 100
 
 void initDebug(UART_HandleTypeDef* huartD);
