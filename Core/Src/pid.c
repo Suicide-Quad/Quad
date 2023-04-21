@@ -19,7 +19,7 @@ double computePid(double measure, double order, pidController* controller)
     double error = order - measure;
     controller->errorTotal += error;
     double derivative = error - controller->errorLast;
-    double command = (controller->Kp * error);// + (controller->Ki * controller->errorTotal) + (controller->Kd * derivative);
+    double command = (controller->Kp * error) + (controller->Ki * controller->errorTotal) + (controller->Kd * derivative);
     controller->errorLast = error;
     return command;
 }
