@@ -37,7 +37,12 @@ BUILD_DIR = build
 # C sources
 C_SOURCES =  \
 Core/Src/main.c \
-Core/Src/PID.c \
+Core/Src/pid.c \
+Core/Src/odometer.c \
+Core/Src/encoder.c\
+Core/Src/pwm.c \
+Core/Src/servo.c \
+Core/Src/utils.c \
 Core/Src/debug.c \
 Core/Src/stm32f4xx_it.c \
 Core/Src/stm32f4xx_hal_msp.c \
