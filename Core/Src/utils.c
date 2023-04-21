@@ -1,6 +1,16 @@
 #include "utils.h"
 #include "odometer.h"
 
+uint8_t checksum(char* msg)
+{
+	uint8_t sum = 0;
+	for (int i = 0; *(msg+i) != 0; i ++)
+	{
+		sum += *(msg+i);
+	}
+	return sum % 256;
+}
+
 MotorSpeed convertPolarSpeed(PolarSpeed speed)
 {
     MotorSpeed motor;

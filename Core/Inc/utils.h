@@ -5,7 +5,7 @@
 #define MAX(a,b) ((a) < (b) ? (b) : (a))
 #define CLAMP(a,c,b) MIN(MAX((a),(c)), (b))
 
-
+uint8_t checksum(char* msg);
 MotorSpeed convertPolarSpeed(PolarSpeed speed);
 PolarSpeed convertMotorSpeed(MotorSpeed speed);
 #endif 
