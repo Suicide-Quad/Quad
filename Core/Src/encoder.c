@@ -1,4 +1,5 @@
 #include "encoder.h"
+#include "math.h"
 
 TIM_HandleTypeDef* encoderLeft;
 TIM_HandleTypeDef* encoderRight;
@@ -8,15 +9,21 @@ void initEncoder(TIM_HandleTypeDef* htimLeft, TIM_HandleTypeDef* htimRight)
     encoderLeft = htimLeft;
     encoderRight = htimRight;
 
-    HAL_TIM_Encoder_Start(htimLeft, TIM_CHANNEL_ALL);
-    HAL_TIM_Encoder_Start(htimRight, TIM_CHANNEL_ALL);
+    HAL_TIM_Encoder_Start_IT(htimLeft, TIM_CHANNEL_ALL);
+    HAL_TIM_Encoder_Start_IT(htimRight, TIM_CHANNEL_ALL);
 }
 
 int getEncoder(enum Encoder encoder)
 {
-    if (encoder == RIGHT)
-        return encoderLeft->Instance->CNT;
-    else if (encoder == LEFT)
-        return encoderLeft->Instance->CNT;
+    if (encoder == ENCODER_RIGHT)
+        return __HAL_TIM_GET_COUNTER(encoderLeft);
+    return __HAL_TIM_GET_COUNTER(encoderRight);
+}
+
+double getEncoderRad(enum Encoder encoder)
+{
+    if (encoder == ENCODER_LEFT)
+        return ((double)getEncoder(encoder)) / ((double)encoderLeft->Init.Period) * 2.0F * M_PI;
+    return ((double)getEncoder(encoder)) / ((double)encoderRight->Init.Period) * 2.0F * M_PI;
 }
 
