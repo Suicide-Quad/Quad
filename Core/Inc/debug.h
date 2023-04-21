@@ -6,9 +6,10 @@
 #define BUFF_SIZE 258
 #define DEBUG_TIME_OUT 100
 
-void initDebug(TIM_HandleTypeDef* huartD)
+void initDebug(UART_HandleTypeDef* huartD);
 
-void sendFloatDebug(char* msg, float value, int multiply)
+void sendFloatDebug(char* msg, float value, int multiply);
 
-void sendIntDebug(char* msg, int value)
+void sendIntDebug(char* msg, int value);
+
 #endif 
