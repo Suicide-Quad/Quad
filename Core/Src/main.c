@@ -136,6 +136,7 @@ int main(void)
     MX_SPI1_Init();
 
     /* USER CODE BEGIN 2 */
+    initDebug(&huart3);
     initEncoder(&htim2, &htim5);
     initPWM(&htim1, &htim8);
     initServo();
@@ -157,11 +158,7 @@ int main(void)
             millis = current;
         }
         // TODO : Function debug
-       uint8_t buffer[64];
-        memset(buffer, '\0', sizeof(buffer));
-        sprintf((char *)buffer, "%.6ld - RES:  %d \r\n", millis, (int)(getEncoder(ENCODER_RIGHT)));
-        HAL_UART_Transmit(&huart3, buffer, sizeof(buffer), 100);
-        memset(buffer, '\0', sizeof(buffer));
+
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
