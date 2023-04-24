@@ -14,28 +14,29 @@
  */
 
 
-pidController servoLinear;
-pidController servoAngular;
+pidController servoLeft;
+pidController servoRight;
 
 void initServo()
 {
     // Kp, Ki, Kd
-    servoLinear = initPid(0.0F, 0.0F, 0.0F);
-    servoAngular = initPid(0.0F, 0.0F, 0.0F);
+    servoLeft = initPid(0.0F, 0.0F, 0.0F);
+    servoRight = initPid(1.0F, 0.0F, 0.0F);
 }
 
 void servo(double measureLinear, double measureAngular, double orderLinear, double orderAngular)
 {
     // TODO : double to struct 
-    PolarSpeed commandSpeed;
-    //TODO : Polar to command 
-    commandSpeed.linear = computePid(measureLinear, orderLinear, &servoLinear);
-    commandSpeed.angular = computePid(measureAngular, orderAngular, &servoAngular);   
+    PolarSpeed measurePolar = {measureLinear, measureAngular};
+    PolarSpeed orderPolar = {orderLinear, orderAngular};
+    MotorSpeed measureMotor = convertPolarSpeed(measurePolar);
+    MotorSpeed orderMotor = convertPolarSpeed(orderPolar);
 
-    MotorSpeed motorSpeed = convertPolarSpeed(commandSpeed);
+    double left = computePid(measureMotor.left, orderMotor.left, &servoLeft);
+    double right = computePid(measureMotor.right, orderMotor.right , &servoRight);
 
-    setPWM(RIGHT, motorSpeed.right);
-    setPWM(LEFT, motorSpeed.left);
+    setPWM(RIGHT, right);
+    setPWM(LEFT, left);
 }
     
 
