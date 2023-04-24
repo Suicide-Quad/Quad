@@ -16,8 +16,8 @@ void initEncoder(TIM_HandleTypeDef* htimLeft, TIM_HandleTypeDef* htimRight)
 int getEncoder(enum Encoder encoder)
 {
     if (encoder == ENCODER_RIGHT)
-        return __HAL_TIM_GET_COUNTER(encoderLeft);
-    return __HAL_TIM_GET_COUNTER(encoderRight);
+        return __HAL_TIM_GET_COUNTER(encoderRight);
+    return __HAL_TIM_GET_COUNTER(encoderLeft);
 }
 
 double getEncoderRad(enum Encoder encoder)

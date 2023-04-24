@@ -1,5 +1,6 @@
 #ifndef _ENCODER_H
 #define _ENCODER_H
+#define HIGH_VALUE 2048 
 
 #include "main.h"
 enum Encoder
