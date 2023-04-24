@@ -1,6 +1,6 @@
 #include "pwm.h"
 #include "utils.h"
-
+#define MAX_LIMIT 100.0F
 // The pwm
 TIM_HandleTypeDef* pwmMotorLeft;
 TIM_HandleTypeDef* pwmMotorRight;
@@ -32,7 +32,7 @@ void setPWM(enum Motor motor, double command)
     {
         htimPWM = pwmMotorRight;
     }
-    float value = (CLAMP(-100.0F, command, 100.0F) / 2 + 50.0F) / 100.0F * htimPWM->Init.Period;
+    uint32_t value = (CLAMP(-MAX_LIMIT, command, MAX_LIMIT) / 2 + 50.0F) / 100.0F * htimPWM->Init.Period;
     __HAL_TIM_SET_COMPARE(htimPWM, TIM_CHANNEL_1, value); 
 }
 
