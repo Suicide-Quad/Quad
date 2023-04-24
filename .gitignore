@@ -7,3 +7,5 @@
 build/
 *.swp
 tags
+*.json
+.cache/
