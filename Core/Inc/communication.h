@@ -21,7 +21,7 @@
 #define END_REQUEST 0x26 //=='&'
 #define SIZE_END 8
 
-#define SIZE_REQUEST(data) SIZE_START + SIZE_TYPEFRAME + (data) + SIZE_CHECKSUM + SIZE_END
+#define SIZE_REQUEST(data) (SIZE_START + SIZE_TYPEFRAME + (data) + SIZE_CHECKSUM + SIZE_END)/8
 
 #define TIME_OUT 1000
 
@@ -35,6 +35,8 @@ enum TypeFrame
 	ACK = 1,
 	RESPONSE_IMAGE = 24,
 	DEBUG_POSITION = 16,
+	DEBUG_INT = 32,
+	DEBUG_FLOAT = 64,
 };
 
 typedef struct PositionCommand
@@ -47,23 +49,36 @@ typedef struct PositionCommand
 
 /*___FUNCTION___*/
 
+//init communication
 void initCommunication(UART_HandleTypeDef* htim);
 
-void sendRequest(char* request);
 
+//receive request and manage all
 void receiveRequest();
+
+
+//send the request request of the type type
+void sendRequest(uint8_t* request, enum TypeFrame type);
 
 //Build and send the request for send image to the esp32 put on huart2;
 void sendImage(uint32_t image[1600*1200]);
+
+//Send request for say "i have read your request"
+void sendAck();
+
+// Build and send the request for send position and orientation of the robot to the esp32 put on huart2;
+void sendDebugPosition(uint8_t x, uint8_t y);
+
+//Build and send the request for debug float
+void sendDebugFloat(float value);
+
+//Build and send the request for debug int
+void sendDebugInt(uint32_t value);
+
+
 //get the ID of the sended image, 255 if not receive response, and 254 if is not found ArUco on image
 uint8_t getId();
 //get the local position of the ArUCo (from the robot)
 struct PositionCommand getPositionArUco();
-
-// Build and send the request for send position and orientation of the robot to the esp32 put on huart2;
-void sendDebugPosition(uint32_t x, uint32_t y, uint32_t theta);
-
-//Send request for say "i have read your request"
-void sendAck();
 
 #endif 
