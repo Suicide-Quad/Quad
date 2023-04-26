@@ -1,6 +1,13 @@
 #include "communication.h"
 
 
+/*___DEFINE___*/
+
+#define FINISH 1
+#define NOT_FINISH 0
+
+
+
 /*___GLOBAL-VAR___*/
 
 //ID of the ArUco
@@ -11,9 +18,12 @@ struct PositionCommand PositionArUco;
 
 UART_HandleTypeDef* ESP_TIM = NULL;
 
+uint8_t Ack = 0;
+
 
 
 /*___FUNCTION___*/
+
 
 void initCommunication(UART_HandleTypeDef* htim)
 {
@@ -22,10 +32,17 @@ void initCommunication(UART_HandleTypeDef* htim)
 
 
 
-uint8_t computeCheckSum(enum TypeFrame type, uint8_t data[type/8])
+int getSizeTypeFrame (enum TypeFrame type)
+{
+	if (type == NONE)
+		return 0;
+	return SizeTypeFrame[type];
+}
+
+uint8_t computeCheckSum(int size, uint8_t data[size])
 {
 	uint8_t sum = 0;
-	for (enum TypeFrame i = 0; i < type/8 ; i ++)
+	for (int i = 0; i < size ; i ++)
 	{
 		sum += data[i];
 	}
@@ -34,69 +51,123 @@ uint8_t computeCheckSum(enum TypeFrame type, uint8_t data[type/8])
 
 
 
-void receiveStartBlock()
+void receiveStartBlock(uint8_t* start, char buffer[], uint8_t* pointBuffer)
 {
-	uint8_t startBlock[1];
-	HAL_UART_Receive(ESP_TIM, startBlock, 1, TIME_OUT);
-	while (startBlock[0] != START_REQUEST)
+	while (!*start && *pointBuffer < BUFF_SIZE)
 	{
-		HAL_UART_Receive(ESP_TIM, startBlock, 1, TIME_OUT);
+		if (buffer[*pointBuffer] == START_REQUEST)
+		{
+			*start = 1;
+		}
+		(*pointBuffer) ++;
 	}
 }
 
-enum TypeFrame receiveTypeBlock()
+//catch data and compute things to do
+uint8_t receiveData(enum TypeFrame type, uint8_t* pointBuffer, uint8_t* sizeReadBuffer, char buffer[])
 {
-	uint8_t typeBlock[1];
-	HAL_UART_Receive(ESP_TIM, typeBlock, 1, TIME_OUT);
-	while(typeBlock[0] == START_REQUEST)
-	{
-		HAL_UART_Receive(ESP_TIM, typeBlock, 1, TIME_OUT);
-	}
-	enum TypeFrame type= typeBlock[0];
-	return type;
-}
+	int sizeType = getSizeTypeFrame(type);
+	static uint8_t data[BUFF_SIZE];
+	static uint8_t goodSum = 0;
 
-//catch data and verify and return if request is_valide
-unsigned char receiveData(enum TypeFrame type)
-{
-	unsigned char isValide = 0;
 	if (type == ACK)
 	{
-		uint8_t data [ACK];
-		HAL_UART_Receive(ESP_TIM, data, ACK, TIME_OUT);
-		uint8_t checksumCompute = computeCheckSum(ACK, data);
-		uint8_t checksumFind [1];
-		HAL_UART_Receive(ESP_TIM, checksumFind, 1, TIME_OUT);
-		if((data[0] == 1) && (checksumCompute == checksumFind[0]))
-			isValide = 1;
+		if (*sizeReadBuffer < sizeType && *pointBuffer < BUFF_SIZE)
+		{
+			data[0] = buffer[*pointBuffer];
+			(*sizeReadBuffer) ++;
+			(*pointBuffer) ++;
+		}
+		if (*sizeReadBuffer == sizeType && *pointBuffer < BUFF_SIZE)
+		{
+			uint8_t checksumRequest = buffer[*pointBuffer];
+			(*pointBuffer) ++;
+			(*sizeReadBuffer) ++;
+			uint8_t checksumCompute = computeCheckSum(sizeType, data);
+			if((data[0] == 1) && (checksumCompute == checksumRequest))
+				goodSum = 1;
+		}
+		else if (*sizeReadBuffer > sizeType && *pointBuffer < BUFF_SIZE)
+		{
+			char end = buffer[*pointBuffer];
+			(*pointBuffer) ++;
+			(*sizeReadBuffer) ++;
+			if (end == END_REQUEST && goodSum == 1)
+			{
+				Ack = 1;
+			}
+			goodSum = 0;
+			return FINISH;
+		}
 	}
 	else if (type == RESPONSE_IMAGE)
 	{
-		uint8_t data [RESPONSE_IMAGE/8];
-		HAL_UART_Receive(ESP_TIM, data, RESPONSE_IMAGE/8, TIME_OUT);
-		uint8_t checksumCompute = computeCheckSum(RESPONSE_IMAGE, data);
-		uint8_t checksumFind [1];
-		HAL_UART_Receive(ESP_TIM, checksumFind, 1, TIME_OUT);
-		if (checksumCompute == checksumFind[0])
+		while(*sizeReadBuffer < sizeType/8 && *pointBuffer < BUFF_SIZE)
 		{
-			IDArUco = data[0];
-			PositionArUco.x = data[1];
-			PositionArUco.y = data[2];
-			isValide = 1;
+			data[*sizeReadBuffer] = buffer[*pointBuffer];
+			(*sizeReadBuffer) ++;
+			(*pointBuffer) ++;
+		}
+		if (*sizeReadBuffer == sizeType && *pointBuffer < BUFF_SIZE)
+		{
+			uint8_t checksumRequest = buffer[*pointBuffer];
+			(*pointBuffer) ++;
+			(*sizeReadBuffer) ++;
+			uint8_t checksumCompute = computeCheckSum(sizeType/8, data);
+			if(checksumCompute == checksumRequest)
+				goodSum = 1;
+		}
+		else if (*sizeReadBuffer > sizeType && *pointBuffer < BUFF_SIZE)
+		{
+			char end = buffer[*pointBuffer];
+			(*pointBuffer) ++;
+			(*sizeReadBuffer) ++;
+			if (end == END_REQUEST && goodSum == 1)
+			{
+				IDArUco = data[0];
+				PositionArUco.x = data[1];
+				PositionArUco.y = data[2];
+			}
+			goodSum = 0;
+			return FINISH;
 		}
 	}
-	return isValide;
+	else
+	{
+		return FINISH;
+	}
+	return NOT_FINISH;
 }
 
 void receiveRequest()
 {
-	unsigned char isValide = 0;
+	static uint8_t start = 0;
+	static enum TypeFrame type = NONE;
+	static uint8_t sizeReadData = 0;
 
-	while(!isValide)
+	char buffer[BUFF_SIZE];
+	getFromDMA(buffer, BUFF_SIZE);
+
+	uint8_t pointBuffer = 0;
+
+	if (!start)
 	{
-		receiveStartBlock();
-		enum TypeFrame type = receiveTypeBlock();
-		isValide = receiveData(type);
+		receiveStartBlock(&start, buffer, &pointBuffer);
+	}
+	if (start && type == NONE && pointBuffer < BUFF_SIZE)
+	{
+		type = buffer[pointBuffer];
+		pointBuffer ++;
+	}
+	if (start && pointBuffer < BUFF_SIZE)
+	{
+		uint8_t finish = receiveData(type, &pointBuffer, &sizeReadData, buffer);
+		if (finish)
+		{
+			start = 0;
+			type = NONE;
+			sizeReadData = 0;
+		}
 	}
 }
 

@@ -6,7 +6,7 @@
 /*___INCLUDE___*/
 
 #include "main.h"
-
+#include "dma.h"
 
 
 /*___DEFINE___*/
@@ -29,14 +29,16 @@
 
 /*___Struct and Enum___*/
 
+int SizeTypeFrame [6] = {65536,1,24,16,32,64};
 enum TypeFrame
 {
-	IMAGE = 65536,
+	NONE = -1,
+	IMAGE = 0,
 	ACK = 1,
-	RESPONSE_IMAGE = 24,
-	DEBUG_POSITION = 16,
-	DEBUG_INT = 32,
-	DEBUG_FLOAT = 64,
+	RESPONSE_IMAGE = 2,
+	DEBUG_POSITION = 3,
+	DEBUG_INT = 4,
+	DEBUG_FLOAT = 5,
 };
 
 typedef struct PositionCommand
