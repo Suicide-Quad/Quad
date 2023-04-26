@@ -10,6 +10,13 @@ struct node {
     uint8_t orientation;
 }
 
+struct intResult
+{
+    int nbrmvt;
+    uint8_t orientation;
+};
+
+
 struct node map[42] = {
     {3, 2, EAST}, // 1
     {3, 1, EAST}, // 2
@@ -59,8 +66,9 @@ void init_map(uint8_t id){
     father = id;
 }
 
-uint8_t get_father(){
+struct intResult get_father(){
     uint8_t old_father = father;
     father = map[old_father].idfather;
-    return (max[old_father].nbrmvt, max[old_father].orientation);
+    struct intResult result = {map[old_father].nbrmvt, map[old_father].orientation};
+    return result;
 }
