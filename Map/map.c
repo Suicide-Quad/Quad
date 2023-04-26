@@ -1,11 +1,7 @@
 #include <cstdint>
+#include "map.h"
 
 const uint8_t father = 0;
-
-#define north 90
-#define south 270
-#define east 180
-#define west 0
 
 //uint8_t
 struct node {
@@ -15,48 +11,48 @@ struct node {
 }
 
 struct node map[42] = {
-    {3, 2,east}, // 1
-    {3, 1,east}, // 2
-    {9, 1,south}, // 3
-    {16, 2,south}, // 4
-    {4, 1,west}, // 5
-    {12, 1,south}, // 6
-    {19, 2,south}, // 7
-    {7, 1,west}, // 8
-    {7, 2,west}, // 9
-    {16, 1,south}, // 10
-    {17, 1,south}, // 11
-    {11, 1,west}, // 12
-    {19, 1,south}, // 13
-    {13, 1,west}, // 14
-    {13, 2, west }, // 15
-    {15, 1, west}, // 16
-    {18, 1, east}, // 17
-    {24, 1, south}, // 18
-    {0, 0, 0}, // 19
-    {32, 2, south}, // 20
-    {15, 1, north}, // 21
-    {16, 1, north}, // 22
-    {17, 1, north}, // 23
-    {0, 0, 0}, // 24
-    {19, 1, north}, // 25
-    {32, 1, south}, // 26
-    {33, 1 ,south}, // 27
-    {16, 2, north}, // 28
-    {17, 2, north}, // 29
-    {36, 1, south}, // 30
-    {32, 1, east}, // 31
-    {33, 1, east}, // 32
-    {34, 1, east}, // 33
-    {16, 3, north}, // 34
-    {17, 3, north}, // 35
-    {35, 1, west}, // 36
-    {31, 1, north}, // 37
-    {37, 1, west}, // 38
-    {42, 3, east}, // 39
-    {42, 2, east}, // 40
-    {42, 1, east}, // 41
-    {36, 1, north}, // 42
+    {3, 2, EAST}, // 1
+    {3, 1, EAST}, // 2
+    {9, 1, SOUTH}, // 3
+    {16, 2, SOUTH}, // 4
+    {4, 1, WEST}, // 5
+    {12, 1,SOUTH}, // 6
+    {19, 2, SOUTH}, // 7
+    {7, 1, WEST}, // 8
+    {7, 2, WEST}, // 9
+    {16, 1, SOUTH}, // 10
+    {17, 1, SOUTH}, // 11
+    {11, 1, WEST}, // 12
+    {19, 1, SOUTH}, // 13
+    {13, 1, WEST}, // 14
+    {13, 2, WEST }, // 15
+    {15, 1, WEST}, // 16
+    {18, 1, EAST}, // 17
+    {24, 1, SOUTH}, // 18
+    {0, 0, WEST}, // 19
+    {32, 2, SOUTH}, // 20
+    {15, 1, NORTH}, // 21
+    {16, 1, NORTH}, // 22
+    {17, 1, NORTH}, // 23
+    {0, 0, WEST}, // 24
+    {19, 1, NORTH}, // 25
+    {32, 1, SOUTH}, // 26
+    {33, 1 ,SOUTH}, // 27
+    {16, 2, NORTH}, // 28
+    {17, 2, NORTH}, // 29
+    {36, 1, SOUTH}, // 30
+    {32, 1, EAST}, // 31
+    {33, 1, EAST}, // 32
+    {34, 1, EAST}, // 33
+    {16, 3, NORTH}, // 34
+    {17, 3, NORTH}, // 35
+    {35, 1, WEST}, // 36
+    {31, 1, NORTH}, // 37
+    {37, 1, WEST}, // 38
+    {42, 3, EAST}, // 39
+    {42, 2, EAST}, // 40
+    {42, 1, EAST}, // 41
+    {36, 1, NORTH}, // 42
 };
 
 void init_map(uint8_t id){
