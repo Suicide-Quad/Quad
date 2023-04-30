@@ -63,77 +63,56 @@ void receiveStartBlock(uint8_t* start, char buffer[], uint8_t* pointBuffer)
 	}
 }
 
+void receiveType(uint8_t data[], enum TypeFrame type)
+{
+	if (type == RESPONSE_IMAGE)
+	{
+		IDArUco = data[0];
+		PositionArUco.x = data[1];
+		PositionArUco.y = data[2];
+	}
+	else if (type == ACK)
+	{
+		Ack = 1;
+	}
+}
+
 //catch data and compute things to do
 uint8_t receiveData(enum TypeFrame type, uint8_t* pointBuffer, uint8_t* sizeReadBuffer, char buffer[])
 {
-	int sizeType = getSizeTypeFrame(type);
+	uint64_t sizeType = getSizeTypeFrame(type);
 	static uint8_t data[BUFF_SIZE];
 	static uint8_t goodSum = 0;
+	static uint8_t startBuffer = 0;
+	static uint8_t first = 1;
+	if (first)
+	{
+		startBuffer = *pointBuffer;
+		first = 0;
+	}
 
-	if (type == ACK)
+	//received data of the request
+	while(*sizeReadBuffer < sizeType/8 && *pointBuffer < BUFF_SIZE)
 	{
-		if (*sizeReadBuffer < sizeType && *pointBuffer < BUFF_SIZE)
-		{
-			data[0] = buffer[*pointBuffer];
-			(*sizeReadBuffer) ++;
-			(*pointBuffer) ++;
-		}
-		if (*sizeReadBuffer == sizeType && *pointBuffer < BUFF_SIZE)
-		{
-			uint8_t checksumRequest = buffer[*pointBuffer];
-			(*pointBuffer) ++;
-			(*sizeReadBuffer) ++;
-			uint8_t checksumCompute = computeCheckSum(sizeType, data);
-			if((data[0] == 1) && (checksumCompute == checksumRequest))
-				goodSum = 1;
-		}
-		else if (*sizeReadBuffer > sizeType && *pointBuffer < BUFF_SIZE)
-		{
-			char end = buffer[*pointBuffer];
-			(*pointBuffer) ++;
-			(*sizeReadBuffer) ++;
-			if (end == END_REQUEST && goodSum == 1)
-			{
-				Ack = 1;
-			}
-			goodSum = 0;
-			return FINISH;
-		}
+		data[*pointBuffer-startBuffer] = buffer[*pointBuffer];
+		(*sizeReadBuffer) += 8;
+		(*pointBuffer) ++;
 	}
-	else if (type == RESPONSE_IMAGE)
+	//verify checksum
+	if (*sizeReadBuffer == sizeType/8 && *pointBuffer < BUFF_SIZE)
 	{
-		while(*sizeReadBuffer < sizeType/8 && *pointBuffer < BUFF_SIZE)
+		uint8_t checksumRequest = buffer[*pointBuffer];
+		(*pointBuffer) ++;
+		(*sizeReadBuffer) ++;
+		uint8_t checksumCompute = computeCheckSum(sizeType/8, data);
+		if(checksumCompute == checksumRequest)
+			goodSum = 1;
+		if (goodSum == 1)
 		{
-			data[*sizeReadBuffer] = buffer[*pointBuffer];
-			(*sizeReadBuffer) ++;
-			(*pointBuffer) ++;
+			receiveType(data, type);
 		}
-		if (*sizeReadBuffer == sizeType && *pointBuffer < BUFF_SIZE)
-		{
-			uint8_t checksumRequest = buffer[*pointBuffer];
-			(*pointBuffer) ++;
-			(*sizeReadBuffer) ++;
-			uint8_t checksumCompute = computeCheckSum(sizeType/8, data);
-			if(checksumCompute == checksumRequest)
-				goodSum = 1;
-		}
-		else if (*sizeReadBuffer > sizeType && *pointBuffer < BUFF_SIZE)
-		{
-			char end = buffer[*pointBuffer];
-			(*pointBuffer) ++;
-			(*sizeReadBuffer) ++;
-			if (end == END_REQUEST && goodSum == 1)
-			{
-				IDArUco = data[0];
-				PositionArUco.x = data[1];
-				PositionArUco.y = data[2];
-			}
-			goodSum = 0;
-			return FINISH;
-		}
-	}
-	else
-	{
+		goodSum = 0;
+		first = 1;
 		return FINISH;
 	}
 	return NOT_FINISH;
@@ -143,7 +122,7 @@ void receiveRequest()
 {
 	static uint8_t start = 0;
 	static enum TypeFrame type = NONE;
-	static uint8_t sizeReadData = 0;
+	static uint8_t sizeReadData = 0; //in bytes calculted in the start of data
 
 	char buffer[BUFF_SIZE];
 	getFromDMA(buffer, BUFF_SIZE);
@@ -196,7 +175,6 @@ void sendDebugPosition(uint8_t x, uint8_t y)
 	uint8_t sum = computeCheckSum(type, &request[2]);
 
 	request[4] = sum;
-	request[5] = END_REQUEST;
 
 	sendRequest(request, SIZE_REQUEST(type));
 }
@@ -213,7 +191,6 @@ void sendAck()
 	uint8_t sum = computeCheckSum(type, &request[2]);
 
 	request[4] = sum;
-	request[5] = END_REQUEST;
 
 	sendRequest(request, SIZE_REQUEST(type));
 }
@@ -234,7 +211,6 @@ void sendDebugInt(uint32_t value)
 	uint8_t sum = computeCheckSum(type, &request[2]);
 
 	request[4] = sum;
-	request[5] = END_REQUEST;
 
 	sendRequest(request, SIZE_REQUEST(type));
 }
@@ -262,7 +238,6 @@ void sendDebugFloat(float value)
 	uint8_t sum = computeCheckSum(type, &request[2]);
 
 	request[10] = sum;
-	request[11] = END_REQUEST;
 
 	sendRequest(request, SIZE_REQUEST(type));
 }

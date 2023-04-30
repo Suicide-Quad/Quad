@@ -18,10 +18,7 @@
 
 #define SIZE_CHECKSUM 8
 
-#define END_REQUEST 0x26 //=='&'
-#define SIZE_END 8
-
-#define SIZE_REQUEST(data) (SIZE_START + SIZE_TYPEFRAME + (data) + SIZE_CHECKSUM + SIZE_END)/8
+#define SIZE_REQUEST(data) (SIZE_START + SIZE_TYPEFRAME + (data) + SIZE_CHECKSUM )/8
 
 #define TIME_OUT 1000
 
@@ -29,7 +26,7 @@
 
 /*___Struct and Enum___*/
 
-int SizeTypeFrame [6] = {65536,1,24,16,32,64};
+int SizeTypeFrame [6] = {65536,8,24,16,32,64};
 enum TypeFrame
 {
 	NONE = -1,
