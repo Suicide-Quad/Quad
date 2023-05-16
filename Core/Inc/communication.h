@@ -26,7 +26,7 @@
 
 #define NOT_FINISH 0
 
-#define FLOAT_PRECISION 100_000
+#define FLOAT_PRECISION 100000
 
 /*___Struct and Enum___*/
 

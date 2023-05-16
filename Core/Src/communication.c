@@ -56,10 +56,6 @@ void receiveType(uint8_t data[], enum TypeFrame type)
 		PositionArUco.x = data[1];
 		PositionArUco.y = data[2];
 	}
-	else if (type == ACK)
-	{
-		Ack = 1;
-	}
     // TODO : Add picture
 }
 
