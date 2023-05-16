@@ -22,7 +22,11 @@
 
 #define TIME_OUT 1000
 
+#define FINISH 1
 
+#define NOT_FINISH 0
+
+#define FLOAT_PRECISION 100_000
 
 /*___Struct and Enum___*/
 

@@ -1,13 +1,5 @@
 #include "communication.h"
 
-
-/*___DEFINE___*/
-
-#define FINISH 1
-#define NOT_FINISH 0
-
-
-
 /*___GLOBAL-VAR___*/
 
 //ID of the ArUco
@@ -18,10 +10,6 @@ struct PositionCommand PositionArUco;
 
 UART_HandleTypeDef* ESP_TIM = NULL;
 
-uint8_t Ack = 0;
-
-
-
 /*___FUNCTION___*/
 
 
@@ -30,8 +18,6 @@ void initCommunication(UART_HandleTypeDef* htim)
 	ESP_TIM = htim;
 }
 
-
-
 int getSizeTypeFrame (enum TypeFrame type)
 {
 	if (type == NONE)
@@ -39,6 +25,7 @@ int getSizeTypeFrame (enum TypeFrame type)
 	return SizeTypeFrame[type];
 }
 
+// TODO : Merge with utils 
 uint8_t computeCheckSum(int size, uint8_t data[size])
 {
 	uint8_t sum = 0;
@@ -48,8 +35,6 @@ uint8_t computeCheckSum(int size, uint8_t data[size])
 	}
 	return sum % 256;
 }
-
-
 
 void receiveStartBlock(uint8_t* start, char buffer[], uint8_t* pointBuffer)
 {
@@ -75,6 +60,7 @@ void receiveType(uint8_t data[], enum TypeFrame type)
 	{
 		Ack = 1;
 	}
+    // TODO : Add picture
 }
 
 //catch data and compute things to do
@@ -218,7 +204,8 @@ void sendDebugInt(uint32_t value)
 void sendDebugFloat(float value)
 {
 	uint32_t valueInt = value;
-	uint32_t valueFloat = value*100000 - valueInt*100000;
+    // 123.234 => 123234 - 123000
+	uint32_t valueFloat = value*FLOAT_PRECISION - valueInt*FLOAT_PRECISION;
 	enum TypeFrame type = DEBUG_FLOAT;
 	uint8_t request [SIZE_REQUEST(type)];
 
