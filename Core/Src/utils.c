@@ -1,11 +1,25 @@
 #include "utils.h"
 #include "odometer.h"
 
-uint8_t equal_threeshold(Location first, Location second, double threeshold)
+uint8_t equalThreeshold(Location first, Location second, double threeshold)
 {
     if (first.x - threeshold < second.x && first.y + threeshold > second.y)
         return 1;
     return 0;
+}
+
+double computeLinearDistance(Location my, Location dst)
+{
+    double x = dst.x - my.x;
+    double y = dst.y - my.y;
+    return sqrt(x*x + y*y);
+}
+
+double computeAngularDistance(Location my, Location dst)
+{
+    double x = dst.x - my.x;
+    double y = dst.y - my.y;
+    return arcsin((x*x + y*y) / y);
 }
 
 uint8_t checksum(char* msg)
