@@ -4,7 +4,6 @@
 #include "pwm.h"
 #include "encoder.h"
 #include "pid.h"
-#include "odometer.h"
 #include "utils.h"
 
 /*
@@ -12,7 +11,6 @@
  * |    | =  |   | X Matrice 
  * | V2 |    | O | 
  */
-
 
 pidController servoLeft;
 pidController servoRight;
@@ -24,11 +22,8 @@ void initServo()
     servoRight = initPid(1.0F, 0.0F, 0.0F);
 }
 
-void servo(double measureLinear, double measureAngular, double orderLinear, double orderAngular)
+void servo(PolarSpeed measurePolar, PolarSpeed orderPolar)
 {
-    // TODO : double to struct 
-    PolarSpeed measurePolar = {measureLinear, measureAngular};
-    PolarSpeed orderPolar = {orderLinear, orderAngular};
     MotorSpeed measureMotor = convertPolarSpeed(measurePolar);
     MotorSpeed orderMotor = convertPolarSpeed(orderPolar);
 
