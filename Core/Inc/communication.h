@@ -19,7 +19,7 @@
 #define SIZE_CHECKSUM 8
 
 #define SIZE_REQUEST(data) (SIZE_START + SIZE_TYPEFRAME + (data) + SIZE_CHECKSUM )/8
-
+// TODO : Change the timeout
 #define TIME_OUT 1000
 
 #define FINISH 1
