@@ -1,6 +1,13 @@
 #include "utils.h"
 #include "odometer.h"
 
+uint8_t equal_threeshold(Location first, Location second, double threeshold)
+{
+    if (first.x - threeshold < second.x && first.y + threeshold > second.y)
+        return 1;
+    return 0;
+}
+
 uint8_t checksum(char* msg)
 {
 	uint8_t sum = 0;
