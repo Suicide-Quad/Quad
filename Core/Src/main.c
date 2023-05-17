@@ -28,6 +28,8 @@
 #include "pwm.h"
 #include "odometer.h"
 #include "servo.h"
+#include "position.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -89,8 +91,16 @@ static void MX_SPI1_Init(void);
 /* USER CODE BEGIN 0 */
 
 /* 
- * Start the encodeur
+ * The Callback function 
  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
+{
+    // TODO : Choose a timer 
+    if (htim == &htim1)
+    {
+        applyGhostMouvement();
+    }
+}
 
 /* USER CODE END 0 */
 
@@ -153,7 +163,8 @@ int main(void)
         if (current - millis > 20)
         {
             PolarSpeed speed = computeOdometer();
-            servo(speed.linear, speed.angular, 0,0);
+            PolarSpeed order = {0,0};
+            servo(speed,order); 
             millis = current;
         }
         // TODO : Function debug
