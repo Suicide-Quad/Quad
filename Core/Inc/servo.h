@@ -2,8 +2,8 @@
 #define _SERVO_H
 #include "main.h"
 
-void servo(double measureLinear, double measureAngular, double orderLinear, double orderAngular);
-
+#include "odometer.h"
+void servo(PolarSpeed measurePolar, PolarSpeed orderPolar);
 void initServo();
 
 #endif
