@@ -10,13 +10,18 @@ struct PositionCommand PositionArUco;
 
 UART_HandleTypeDef* ESP_TIM = NULL;
 
-/*___FUNCTION___*/
+int SizeTypeFrame[7] = {-1,8,24,128,32,64,131072};
 
+
+
+/*___FUNCTION___*/
 
 void initCommunication(UART_HandleTypeDef* htim)
 {
 	ESP_TIM = htim;
+	IDArUco = 255;
 }
+
 
 int getSizeTypeFrame (enum TypeFrame type)
 {
@@ -35,6 +40,7 @@ uint8_t computeCheckSum(int size, uint8_t data[size])
 	}
 	return sum % 256;
 }
+
 
 void receiveStartBlock(uint8_t* start, char buffer[], uint8_t* pointBuffer)
 {
@@ -56,7 +62,6 @@ void receiveType(uint8_t data[], enum TypeFrame type)
 		PositionArUco.x = data[1];
 		PositionArUco.y = data[2];
 	}
-    // TODO : Add picture
 }
 
 //catch data and compute things to do
@@ -133,116 +138,74 @@ void receiveRequest()
 }
 
 
-
 void sendRequest(uint8_t* msg, enum TypeFrame type)
 {
 	HAL_UART_Transmit(ESP_TIM,msg, type/8, TIME_OUT);
 }
 
+void computeRequestGeneric(enum TypeFrame type, uint8_t* request)
+{
+	uint8_t sizeType = getSizeTypeFrame(type);
+	uint8_t sizeRequest = SIZE_REQUEST(sizeType);
+
+	request[0] = START_REQUEST;
+
+	request[1] = type;
+
+	uint8_t sum = computeCheckSum(sizeType/8, &request[2]);
+	request[sizeRequest-1] = sum;
+	
+	sendRequest(request, sizeRequest);
+}
+
 void sendAskPosition()
 {
 	enum TypeFrame type = ASK_POSITION;
-	int sizeRequest = SIZE_REQUEST(getSizeTypeFrame(type));
-	uint8_t request [sizeRequest];
+	uint8_t request [SIZE_REQUEST(getSizeTypeFrame(type))];
 
-	request[0] = START_REQUEST;
-	request[1] = type;
-
-	sendRequest(request, sizeRequest);
+	computeRequestGeneric(type,request);
 }
 
 void sendDebugPosition(uint8_t x, uint8_t y)
 {
 	enum TypeFrame type = DEBUG_POSITION;
-	uint8_t sizeType = getSizeTypeFrame(type);
-	int sizeRequest = SIZE_REQUEST(sizeType);
-	uint8_t request [sizeRequest];
+	uint8_t request [SIZE_REQUEST(getSizeTypeFrame(type))];
 
-	request[0] = START_REQUEST;
-	request[1] = type;
-	request[2] = x;
-	request[3] = y;
+	int vxp = trunc(x);
+	int vxn = trunc(x*FLOAT_PRECISION)-vxp*FLOAT_PRECISION;
+	memcpy(&request[2],&vxp,4);
+	memcpy(&request[6],&vxn,4);
 
-	uint8_t sum = computeCheckSum(sizeType/8, &request[2]);
+	int vyp = trunc(y);
+	int vyn = trunc(y*FLOAT_PRECISION)-vyp*FLOAT_PRECISION;
+	memcpy(&request[10],&vyp,4);
+	memcpy(&request[14],&vyn,4);
 
-	request[4] = sum;
-
-	sendRequest(request, sizeRequest);
-}
-
-void sendAck()
-{
-	enum TypeFrame type = ACK;
-	uint8_t sizeType = getSizeTypeFrame(type);
-	int sizeRequest = SIZE_REQUEST(sizeType);
-	uint8_t request [sizeRequest];
-
-
-	request[0] = START_REQUEST;
-	request[1] = type;
-	request[2] = 1;
-
-	uint8_t sum = computeCheckSum(sizeType/8, &request[2]);
-
-	request[4] = sum;
-
-	sendRequest(request, sizeRequest);
+	computeRequestGeneric(type,request);
 }
 
 void sendDebugInt(uint32_t value)
 {
 	enum TypeFrame type = DEBUG_INT;
-	uint8_t sizeType = getSizeTypeFrame(type);
-	int sizeRequest = SIZE_REQUEST(sizeType);
-	uint8_t request [sizeRequest];
+	uint8_t request [SIZE_REQUEST(getSizeTypeFrame(type))];
 
+	memcpy(&request[2],&value,4);
 
-	request[0] = START_REQUEST;
-	request[1] = type;
-	
-	request[2] = value >> 24;
-	request[3] = value >> 16;
-	request[4] = value >> 8;
-	request[5] = value;
-
-	uint8_t sum = computeCheckSum(sizeType/8, &request[2]);
-
-	request[4] = sum;
-
-	sendRequest(request, sizeRequest);
+	computeRequestGeneric(type,request);
 }
 
 void sendDebugFloat(float value)
 {
-	uint32_t valueInt = value;
-    // 123.234 => 123234 - 123000
-	uint32_t valueFloat = value*FLOAT_PRECISION - valueInt*FLOAT_PRECISION;
-	enum TypeFrame type = DEBUG_FLOAT;
-	uint8_t sizeType = getSizeTypeFrame(type);
-	int sizeRequest = SIZE_REQUEST(sizeType);
-	uint8_t request [sizeRequest];
+	enum TypeFrame type = DEBUG_POSITION;
+	uint8_t request [SIZE_REQUEST(getSizeTypeFrame(type))];
 
+	int vp = trunc(value);
+	int vn = trunc(value*FLOAT_PRECISION)-value*FLOAT_PRECISION;
+	memcpy(&request[2],&vp,4);
+	memcpy(&request[6],&vn,4);
 
-	request[0] = START_REQUEST;
-	request[1] = type;
-	
-	request[2] = valueInt >> 24;
-	request[3] = valueInt >> 16;
-	request[4] = valueInt >> 8;
-	request[5] = valueInt;
-
-	request[6] = valueFloat >> 24;
-	request[7] = valueFloat >> 16;
-	request[8] = valueFloat >> 8;
-	request[9] = valueFloat;
-
-	uint8_t sum = computeCheckSum(sizeType/8, &request[2]);
-
-	request[10] = sum;
-
-	sendRequest(request, sizeRequest);
+	computeRequestGeneric(type,request);
 }
-
 
 
 uint8_t getId()
