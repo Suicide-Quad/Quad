@@ -26,13 +26,13 @@
 
 /*___Struct and Enum___*/
 
-int SizeTypeFrame [6] = {65536,8,24,16,32,64};
+int SizeTypeFrame [6] = {131072,8,24,16,32,64};
 enum TypeFrame
 {
 	NONE = -1,
-	IMAGE = 0,
+	ASK_POSITION = 0,
 	ACK = 1,
-	RESPONSE_IMAGE = 2,
+	RESPONSE_POSITION = 2,
 	DEBUG_POSITION = 3,
 	DEBUG_INT = 4,
 	DEBUG_FLOAT = 5,
@@ -60,7 +60,7 @@ void receiveRequest();
 void sendRequest(uint8_t* request, enum TypeFrame type);
 
 //Build and send the request for send image to the esp32 put on huart2;
-void sendImage(uint32_t image[1600*1200]);
+void sendAskPosition();
 
 //Send request for say "i have read your request"
 void sendAck();

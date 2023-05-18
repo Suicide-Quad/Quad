@@ -65,7 +65,7 @@ void receiveStartBlock(uint8_t* start, char buffer[], uint8_t* pointBuffer)
 
 void receiveType(uint8_t data[], enum TypeFrame type)
 {
-	if (type == RESPONSE_IMAGE)
+	if (type == RESPONSE_POSITION)
 	{
 		IDArUco = data[0];
 		PositionArUco.x = data[1];
@@ -157,48 +157,63 @@ void sendRequest(uint8_t* msg, enum TypeFrame type)
 	HAL_UART_Transmit(ESP_TIM,msg, type/8, TIME_OUT);
 }
 
-void sendImage(uint32_t image[1600*1200])
+void sendAskPosition()
 {
-	return;
+	enum TypeFrame type = ASK_POSITION;
+	int sizeRequest = SIZE_REQUEST(getSizeTypeFrame(type));
+	uint8_t request [sizeRequest];
+
+	request[0] = START_REQUEST;
+	request[1] = type;
+
+	sendRequest(request, sizeRequest);
 }
 
 void sendDebugPosition(uint8_t x, uint8_t y)
 {
 	enum TypeFrame type = DEBUG_POSITION;
-	uint8_t request [SIZE_REQUEST(type)];
+	uint8_t sizeType = getSizeTypeFrame(type);
+	int sizeRequest = SIZE_REQUEST(sizeType);
+	uint8_t request [sizeRequest];
 
 	request[0] = START_REQUEST;
 	request[1] = type;
 	request[2] = x;
 	request[3] = y;
 
-	uint8_t sum = computeCheckSum(type, &request[2]);
+	uint8_t sum = computeCheckSum(sizeType/8, &request[2]);
 
 	request[4] = sum;
 
-	sendRequest(request, SIZE_REQUEST(type));
+	sendRequest(request, sizeRequest);
 }
 
 void sendAck()
 {
 	enum TypeFrame type = ACK;
-	uint8_t request [SIZE_REQUEST(type)];
+	uint8_t sizeType = getSizeTypeFrame(type);
+	int sizeRequest = SIZE_REQUEST(sizeType);
+	uint8_t request [sizeRequest];
+
 
 	request[0] = START_REQUEST;
 	request[1] = type;
 	request[2] = 1;
 
-	uint8_t sum = computeCheckSum(type, &request[2]);
+	uint8_t sum = computeCheckSum(sizeType/8, &request[2]);
 
 	request[4] = sum;
 
-	sendRequest(request, SIZE_REQUEST(type));
+	sendRequest(request, sizeRequest);
 }
 
 void sendDebugInt(uint32_t value)
 {
 	enum TypeFrame type = DEBUG_INT;
-	uint8_t request [SIZE_REQUEST(type)];
+	uint8_t sizeType = getSizeTypeFrame(type);
+	int sizeRequest = SIZE_REQUEST(sizeType);
+	uint8_t request [sizeRequest];
+
 
 	request[0] = START_REQUEST;
 	request[1] = type;
@@ -208,11 +223,11 @@ void sendDebugInt(uint32_t value)
 	request[4] = value >> 8;
 	request[5] = value;
 
-	uint8_t sum = computeCheckSum(type, &request[2]);
+	uint8_t sum = computeCheckSum(sizeType/8, &request[2]);
 
 	request[4] = sum;
 
-	sendRequest(request, SIZE_REQUEST(type));
+	sendRequest(request, sizeRequest);
 }
 
 void sendDebugFloat(float value)
@@ -220,7 +235,10 @@ void sendDebugFloat(float value)
 	uint32_t valueInt = value;
 	uint32_t valueFloat = value*100000 - valueInt*100000;
 	enum TypeFrame type = DEBUG_FLOAT;
-	uint8_t request [SIZE_REQUEST(type)];
+	uint8_t sizeType = getSizeTypeFrame(type);
+	int sizeRequest = SIZE_REQUEST(sizeType);
+	uint8_t request [sizeRequest];
+
 
 	request[0] = START_REQUEST;
 	request[1] = type;
@@ -235,11 +253,11 @@ void sendDebugFloat(float value)
 	request[8] = valueFloat >> 8;
 	request[9] = valueFloat;
 
-	uint8_t sum = computeCheckSum(type, &request[2]);
+	uint8_t sum = computeCheckSum(sizeType/8, &request[2]);
 
 	request[10] = sum;
 
-	sendRequest(request, SIZE_REQUEST(type));
+	sendRequest(request, sizeRequest);
 }
 
 
