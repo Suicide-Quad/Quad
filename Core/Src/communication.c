@@ -10,7 +10,7 @@ struct PositionCommand PositionArUco;
 
 UART_HandleTypeDef* ESP_TIM = NULL;
 
-int SizeTypeFrame[7] = {-1,8,24,128,32,64,131072};
+int SizeTypeFrame[7] = {-1,8,24,136,40,72,131072};
 
 
 
@@ -166,7 +166,7 @@ void sendAskPosition()
 	computeRequestGeneric(type,request);
 }
 
-void sendDebugPosition(uint8_t x, uint8_t y)
+void sendDebugPosition(uint8_t x, uint8_t y, char id)
 {
 	enum TypeFrame type = DEBUG_POSITION;
 	uint8_t request [SIZE_REQUEST(getSizeTypeFrame(type))];
@@ -181,20 +181,24 @@ void sendDebugPosition(uint8_t x, uint8_t y)
 	memcpy(&request[10],&vyp,4);
 	memcpy(&request[14],&vyn,4);
 
+	request[18] = id;
+
 	computeRequestGeneric(type,request);
 }
 
-void sendDebugInt(uint32_t value)
+void sendDebugInt(uint32_t value, char id)
 {
 	enum TypeFrame type = DEBUG_INT;
 	uint8_t request [SIZE_REQUEST(getSizeTypeFrame(type))];
 
 	memcpy(&request[2],&value,4);
 
+	request[6] = id;
+
 	computeRequestGeneric(type,request);
 }
 
-void sendDebugFloat(float value)
+void sendDebugFloat(float value, char id)
 {
 	enum TypeFrame type = DEBUG_POSITION;
 	uint8_t request [SIZE_REQUEST(getSizeTypeFrame(type))];
@@ -203,6 +207,8 @@ void sendDebugFloat(float value)
 	int vn = trunc(value*FLOAT_PRECISION)-value*FLOAT_PRECISION;
 	memcpy(&request[2],&vp,4);
 	memcpy(&request[6],&vn,4);
+
+	request[10] = id;
 
 	computeRequestGeneric(type,request);
 }

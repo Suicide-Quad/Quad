@@ -19,7 +19,7 @@
 
 #define SIZE_CHECKSUM 8
 
-#define SIZE_REQUEST(data) (SIZE_START + SIZE_TYPEFRAME + (data) + SIZE_CHECKSUM )/8
+#define SIZE_REQUEST(data) ((SIZE_START) + (SIZE_TYPEFRAME) + (data) + (SIZE_CHECKSUM) )/8
 
 #define TIME_OUT 100
 
@@ -62,13 +62,13 @@ void receiveRequest();
 void sendAskPosition();
 
 // Build and send the request for send position and orientation of the robot
-void sendDebugPosition(uint8_t x, uint8_t y);
+void sendDebugPosition(uint8_t x, uint8_t y, char id);
 
 //Build and send the request for debug int
-void sendDebugInt(uint32_t value);
+void sendDebugInt(uint32_t value, char id);
 
 //Build and send the request for debug float
-void sendDebugFloat(float value);
+void sendDebugFloat(float value, char id);
 
 //get the ID of the sended image, 255 if not receive response, and 254 if is not found ArUco on image
 uint8_t getId();
