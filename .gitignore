@@ -5,6 +5,8 @@
 [Dd]ebug
 .launch
 build/
-tags
-.cache/
 compile_commands.json
+*.swp
+tags
+*.json
+.cache/
