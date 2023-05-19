@@ -31,7 +31,7 @@ typedef enum TrajectoryStateEnum
     Linear,
 } TrajectoryState;
 
-void initMouvement(Location current, Location command);
+int initMouvement(Location current, Location command);
 
 void computeGhostLinearMouvement();
 void computeGhostAngularMouvement();

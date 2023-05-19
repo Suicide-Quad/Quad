@@ -62,8 +62,7 @@ void receiveRequest();
 void sendAskPosition();
 
 // Build and send the request for send position and orientation of the robot
-void sendDebugPosition(double x, double y, char id);
-
+void sendDebugPosition(double x,double y, char id);
 
 //Build and send the request for debug int
 void sendDebugInt(uint32_t value, char id);

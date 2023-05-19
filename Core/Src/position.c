@@ -6,7 +6,7 @@
 Location myPosition;
 Location destinationPosition;
 TrajectoryState state = Idle;
-double currentTime = 0;
+double curretntTime = 0;
 double distanceLin = 0;
 double distanceTheta = 0;
 double ghostLin = 0;
@@ -14,11 +14,16 @@ double ghostAng = 0;
 double T_a;
 double T_c;
 
-void initMouvement(Location current, Location destination)
+int initMouvement(Location current, Location destination)
 {
-    destinationPosition = destination;
-    myPosition = current;
-    state = Idle;
+    if (state == Idle)
+    {
+        destinationPosition = destination;
+        myPosition = current;
+        state = Linear;
+        return 1;
+    }
+    return 0;
 }
 
 void computeGhostAngularMouvement()
