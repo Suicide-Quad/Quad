@@ -183,18 +183,18 @@ int main(void)
     int mvt = initMouvement(current, destination);
     while (1)
     {
+        mvt = getState();
         if (mvt == 1)
         {
           current = {0, 0, oldorientation};
           destination = {nbrmvt, nbrmvt, orientation};
-          int mvt2 = initMouvement(current, destination);
-          if (mvt2 == 1)
-          {
-              result = get_father();
-              nbrmvt = result.nbrmvt;
-              oldorientation = orientation;
-              orientation = result.orientation;
-          }
+          mvt = initMouvement(current, destination);
+          
+          result = get_father();
+          nbrmvt = result.nbrmvt;
+          oldorientation = orientation;
+          orientation = result.orientation;
+          
         }
     /* USER CODE END WHILE */
 

@@ -26,6 +26,10 @@ int initMouvement(Location current, Location destination)
     return 0;
 }
 
+int getState(){
+    return state == Idle;
+}
+
 void computeGhostAngularMouvement()
 {
     if (T_a > currentTime)
