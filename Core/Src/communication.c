@@ -1,4 +1,5 @@
 #include "communication.h"
+#include "math.h" 
 
 /*___GLOBAL-VAR___*/
 
@@ -8,7 +9,7 @@ uint8_t IDArUco;
 //Local Position of ArUco (from the robot)
 struct PositionCommand PositionArUco;
 
-UART_HandleTypeDef* ESP_TIM = NULL;
+UART_HandleTypeDef* htimESP = NULL;
 
 int SizeTypeFrame[7] = {-1,8,24,136,40,72,131072};
 
@@ -18,7 +19,7 @@ int SizeTypeFrame[7] = {-1,8,24,136,40,72,131072};
 
 void initCommunication(UART_HandleTypeDef* htim)
 {
-	ESP_TIM = htim;
+	htimESP = htim;
 	IDArUco = 255;
 }
 
@@ -140,7 +141,10 @@ void receiveRequest()
 
 void sendRequest(uint8_t* msg, enum TypeFrame type)
 {
-	HAL_UART_Transmit(ESP_TIM,msg, type/8, TIME_OUT);
+    if (htimESP != NULL)
+    {
+	    HAL_UART_Transmit(htimESP,msg, type/8, TIME_OUT);
+    }
 }
 
 void computeRequestGeneric(enum TypeFrame type, uint8_t* request)
@@ -166,7 +170,7 @@ void sendAskPosition()
 	computeRequestGeneric(type,request);
 }
 
-void sendDebugPosition(uint8_t x, uint8_t y, char id)
+void sendDebugPosition(double x,double y, char id)
 {
 	enum TypeFrame type = DEBUG_POSITION;
 	uint8_t request [SIZE_REQUEST(getSizeTypeFrame(type))];
