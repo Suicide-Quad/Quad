@@ -6,7 +6,7 @@
 Location myPosition;
 Location destinationPosition;
 TrajectoryState state = Idle;
-double currentTime = 0;
+double curretntTime = 0;
 double distanceLin = 0;
 double distanceTheta = 0;
 double ghostLin = 0;
