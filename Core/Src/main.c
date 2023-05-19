@@ -29,6 +29,7 @@
 #include "odometer.h"
 #include "servo.h"
 #include "position.h"
+#include "communication.h"
 
 /* USER CODE END Includes */
 
@@ -156,14 +157,15 @@ int main(void)
     initServo();
     setPWM(RIGHT,0);
     setPWM(LEFT,0);
-    uint64_t millis = HAL_GetTick();
-    uint64_t current;
+    //uint64_t millis = HAL_GetTick();
+    //uint64_t current;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
     while (1)
     {
+		/*
         current = HAL_GetTick();
         if (current - millis > 20)
         {
@@ -172,7 +174,8 @@ int main(void)
             servo(speed,order); 
             millis = current;
         }
-        // TODO : Function debug
+        // TODO : Function debug*/
+		sendDebugInt(30,'d');
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
