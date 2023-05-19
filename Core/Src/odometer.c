@@ -1,7 +1,7 @@
 #include "utils.h"
 #include "encoder.h"
 #include "odometer.h"
-#include "debug.h"
+#include "communication.h"
 
 uint32_t lastEncoderLeft = 0;
 uint32_t lastEncoderRight = 0;
@@ -27,8 +27,8 @@ PolarSpeed computeOdometer()
     motorSpeed.left = -computeSpeed(ENCODER_LEFT, encoderLeft);
     motorSpeed.right = computeSpeed(ENCODER_RIGHT, encoderRight);
     PolarSpeed polarSpeed = convertMotorSpeed(motorSpeed);
-    sendInt("linea", (int)(RAD_TO_DEG(motorSpeed.right)*100));
-    sendFloatDebug("line", polarSpeed.linear,100);
+    //sendInt("linea", (int)(RAD_TO_DEG(motorSpeed.right)*100));
+    //sendFloatDebug("line", polarSpeed.linear,100);
     lastEncoderLeft = encoderLeft;
     lastEncoderRight = encoderRight; 
     //sendFloatDebug("linea", (polarSpeed.linear),100);

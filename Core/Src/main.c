@@ -21,7 +21,6 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "debug.h"
 #include <math.h>
 #include "main.h"
 #include "utils.h"
@@ -151,7 +150,7 @@ int main(void)
   MX_SPI1_Init();
   MX_TIM9_Init();
   /* USER CODE BEGIN 2 */
-    initDebug(&huart3, &huart2);
+    // initDebug(&huart3, &huart2);
     initEncoder(&htim5, &htim2);
     initPWM(&htim8, &htim1);
     initServo();
