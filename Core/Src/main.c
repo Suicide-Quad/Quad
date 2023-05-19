@@ -152,7 +152,7 @@ int main(void)
   MX_TIM9_Init();
   /* USER CODE BEGIN 2 */
     // initDebug(&huart3, &huart2);
-    initCommunication(&huart2);
+    initCommunication(&huart3);
     initEncoder(&htim5, &htim2);
     initPWM(&htim8, &htim1);
     initServo();
