@@ -10,6 +10,7 @@ uint8_t IDArUco;
 struct PositionCommand PositionArUco;
 
 UART_HandleTypeDef* htimESP = NULL;
+UART_HandleTypeDef* htimUSB = NULL;
 
 int SizeTypeFrame[7] = {-1,8,24,136,40,72,131072};
 
@@ -17,9 +18,10 @@ int SizeTypeFrame[7] = {-1,8,24,136,40,72,131072};
 
 /*___FUNCTION___*/
 
-void initCommunication(UART_HandleTypeDef* htim)
+void initCommunication(UART_HandleTypeDef* htim, UART_HandleTypeDef* htim2)
 {
 	htimESP = htim;
+    htimUSB = htim2;
 	IDArUco = 255;
 }
 
@@ -141,10 +143,11 @@ void receiveRequest()
 
 void sendRequest(uint8_t* msg, enum TypeFrame type)
 {
+    
     if (htimESP != NULL)
-    {
-	    HAL_UART_Transmit(htimESP,msg, type/8, TIME_OUT);
-    }
+	    HAL_UART_Transmit(htimESP, msg, type/8, TIME_OUT);
+    if (htimUSB != NULL)
+	    HAL_UART_Transmit(htimUSB, msg, type/8, TIME_OUT);
 }
 
 void computeRequestGeneric(enum TypeFrame type, uint8_t* request)
