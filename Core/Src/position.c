@@ -14,11 +14,16 @@ double ghostAng = 0;
 double T_a;
 double T_c;
 
-void initMouvement(Location current, Location destination)
+int initMouvement(Location current, Location destination)
 {
-    destinationPosition = destination;
-    myPosition = current;
-    state = Idle;
+    if (state == Idle)
+    {
+        destinationPosition = destination;
+        myPosition = current;
+        state = Linear;
+        return 1;
+    }
+    return 0;
 }
 
 void computeGhostAngularMouvement()
