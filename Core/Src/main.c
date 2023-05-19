@@ -174,22 +174,27 @@ int main(void)
     init_map(id);
     /// TODO aller sur le centre 
     struct intResult result = get_father();
-    uint8_t nbrmvt = 0;
-    uint8_t orientation = 0;
+    uint8_t nbrmvt = result.nbrmvt;
+    uint8_t orientation = result.orientation;
+    uint8_t oldorientation = orientation;
+    struct PositionCommand position = getPositionArUco();
+    Location current = {0, 0, oldorientation};
+    Location destination = {position.x, position.y, oldorientation};
+    int mvt = initMouvement(current, destination);
     while (1)
-    { 
-        nbrmvt = 0;
-        orientation = 0;
-        nbrmvt = result.nbrmvt;
-        orientation = result.orientation;
-
-        struct PositionCommand position = getPositionArUco();
-        Location current = {position.x, position.y, 0};
-        Location destination = {position.x + nbrmvt, position.y + nbrmvt, orientation};
-        int mvt = initMouvement({0,0}, destination);
+    {
         if (mvt == 1)
         {
-            result = get_father();
+          current = {0, 0, oldorientation};
+          destination = {nbrmvt, nbrmvt, orientation};
+          int mvt2 = initMouvement(current, destination);
+          if (mvt2 == 1)
+          {
+              result = get_father();
+              nbrmvt = result.nbrmvt;
+              oldorientation = orientation;
+              orientation = result.orientation;
+          }
         }
     /* USER CODE END WHILE */
 
