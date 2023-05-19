@@ -19,7 +19,7 @@ double computeAngularDistance(Location my, Location dst)
 {
     double x = dst.x - my.x;
     double y = dst.y - my.y;
-    return arcsin((x*x + y*y) / y);
+    return asin((x*x + y*y) / y);
 }
 
 uint8_t checksum(char* msg)
