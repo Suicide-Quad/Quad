@@ -30,6 +30,7 @@
 #include "servo.h"
 #include "position.h"
 #include "communication.h"
+#include "map.h"
 
 /* USER CODE END Includes */
 
@@ -181,6 +182,37 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
     }
+    int id = getId();
+    while (id > 42){
+      // on veut la bonne position
+      sendAskPosition();
+      id = getId();
+    }
+    init_map(id);
+    uint8_t nbrmvt = 0;
+    uint8_t orientation = 0;
+    struct intResult result = get_father();
+    nbrmvt = result.nbrmvt;
+    orientation = result.orientation;
+
+    struct PositionCommand position = getPositionArUco();
+    Location current = {position.x, position.y, 0};
+    Location destination = {position.x + nbrmvt, position.y + nbrmvt, orientation};
+    int mvt = initMouvement(current, destination);
+    while (nbrmvt != 0){
+      int i = 0;
+      while (mvt == 0){
+        i = 0;
+      }
+      result = get_father();
+      nbrmvt = result.nbrmvt;
+      orientation = result.orientation;
+      current = destination;
+      destination = {current.x + nbrmvt, current.y + nbrmvt, orientation};
+      mvt = initMouvement(current, destination);
+    }
+
+
   /* USER CODE END 3 */
 }
 
