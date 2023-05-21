@@ -53,7 +53,7 @@ typedef struct PositionCommand
 /*___USEFUL_FUNCTION___*/
 
 //init communication
-void initCommunication(UART_HandleTypeDef* htim);
+void initCommunication(UART_HandleTypeDef* htim, UART_HandleTypeDef* htim2);
 
 //receive request and manage all
 void receiveRequest();
@@ -79,8 +79,6 @@ struct PositionCommand getPositionArUco();
 
 /*___BACKEND_FUNCTION___*/
 
-void initCommunication(UART_HandleTypeDef* htim);
-
 int getSizeTypeFrame (enum TypeFrame type);
 
 uint8_t computeCheckSum(int size, uint8_t data[size]);
@@ -91,7 +89,7 @@ void receiveType(uint8_t data[], enum TypeFrame type);
 
 uint8_t receiveData(enum TypeFrame type, uint8_t* pointBuffer, uint8_t* sizeReadBuffer, char buffer[]);
 
-void sendRequest(uint8_t* msg, enum TypeFrame type);
+void sendRequest(uint8_t* msg, int size);
 
 void computeRequestGeneric(enum TypeFrame type, uint8_t* request);
 

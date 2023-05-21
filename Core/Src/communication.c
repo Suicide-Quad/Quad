@@ -10,6 +10,7 @@ uint8_t IDArUco;
 struct PositionCommand PositionArUco;
 
 UART_HandleTypeDef* htimESP = NULL;
+UART_HandleTypeDef* htimUSB = NULL;
 
 int SizeTypeFrame[7] = {-1,8,24,136,40,72,131072};
 
@@ -17,9 +18,15 @@ int SizeTypeFrame[7] = {-1,8,24,136,40,72,131072};
 
 /*___FUNCTION___*/
 
-void initCommunication(UART_HandleTypeDef* htim)
+void initCommunication(UART_HandleTypeDef* htim, UART_HandleTypeDef* htim2)
 {
 	htimESP = htim;
+	HAL_UART_Init(htim);
+	HAL_UART_MspInit(htim);
+	htimUSB = htim2;
+	HAL_UART_Init(htim2);
+	HAL_UART_MspInit(htim2);
+
 	IDArUco = 255;
 }
 
@@ -139,12 +146,16 @@ void receiveRequest()
 }
 
 
-void sendRequest(uint8_t* msg, enum TypeFrame type)
+void sendRequest(uint8_t* msg, int size)
 {
     if (htimESP != NULL)
     {
-	    HAL_UART_Transmit(htimESP,msg, type/8, TIME_OUT);
+	    HAL_UART_Transmit(htimESP,msg, size, TIME_OUT);
     }
+	if (htimUSB != NULL)
+	{
+		HAL_UART_Transmit(htimUSB,msg , size, TIME_OUT);
+	}
 }
 
 void computeRequestGeneric(enum TypeFrame type, uint8_t* request)
@@ -159,7 +170,7 @@ void computeRequestGeneric(enum TypeFrame type, uint8_t* request)
 	uint8_t sum = computeCheckSum(sizeType/8, &request[2]);
 	request[sizeRequest-1] = sum;
 	
-	sendRequest(request, sizeRequest);
+	sendRequest(request, sizeRequest*8);
 }
 
 void sendAskPosition()
