@@ -29,6 +29,8 @@
 
 #define FLOAT_PRECISION 1000000
 
+#define POSITION_PRECISION 1000
+
 
 /*___Struct and Enum___*/
 

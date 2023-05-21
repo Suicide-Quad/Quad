@@ -66,9 +66,9 @@ void receiveType(uint8_t data[], enum TypeFrame type)
 {
 	if (type == RESPONSE_POSITION)
 	{
-		IDArUco = data[0];
-		PositionArUco.x = data[1];
-		PositionArUco.y = data[2];
+		PositionArUco.x = data[0]*POSITION_PRECISION;
+		PositionArUco.y = data[1]*POSITION_PRECISION;
+		IDArUco = data[2];
 	}
 }
 
