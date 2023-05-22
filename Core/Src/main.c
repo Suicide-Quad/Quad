@@ -30,7 +30,6 @@
 #include "odometer.h"
 #include "servo.h"
 #include "position.h"
-#include "communication.h"
 #include "map.h"
 
 /* USER CODE END Includes */
@@ -161,7 +160,7 @@ int main(void)
   MX_TIM9_Init();
   /* USER CODE BEGIN 2 */
   // initDebug(&huart3, &huart2);
-  initCommunication(&huart2,&huart3);
+  //initCommunication(&huart2,&huart3);
   initEncoder(&htim5, &htim2);
   initPWM(&htim8, &htim1);
   //initDMA(&huart2);
@@ -174,7 +173,9 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  /*
   while (getId() == 255)
+
   {
       sendAskPosition();
       receiveRequest();
@@ -182,7 +183,7 @@ int main(void)
   while (1)
   {
       sendDebugInt(1243,'o');
-  }
+  }*/
   /*
      int id = getId();
      while (id > 42){

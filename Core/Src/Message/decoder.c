@@ -1,4 +1,5 @@
 #include "Message/decoder.h" 
+#include "Message/proccesor.h" 
 #include "utils.h" 
 
 StateReceive actualStatement = WAITING;
@@ -39,8 +40,10 @@ void receiveByte(uint8_t received)
         // Actual statement == SUM
         if (received == computeCheckSum(payload, sizePayload))
         {
-            // call function
+            processMessage(actualType, payload);
         }
+        indexPayload = 0;
+        actualType = NONE;
         actualStatement = WAITING;
     }
 }
