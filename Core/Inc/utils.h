@@ -34,4 +34,11 @@ typedef enum
 	ASK_POSITION = 6,
 } TypeRequest;
 
+typedef struct
+{
+	int x;
+	int y;
+}PositionCommande;
+
+
 #endif 
