@@ -141,13 +141,13 @@ void receiveRequest()
 }
 
 
-void sendRequest(uint8_t* msg, enum TypeFrame type)
+void sendRequest(uint8_t* msg, uint8_t size)
 {
     
     if (htimESP != NULL)
-	    HAL_UART_Transmit(htimESP, msg, type/8, TIME_OUT);
+	    HAL_UART_Transmit(htimESP, msg, size, TIME_OUT);
     if (htimUSB != NULL)
-	    HAL_UART_Transmit(htimUSB, msg, type/8, TIME_OUT);
+	    HAL_UART_Transmit(htimUSB, msg, size, TIME_OUT);
 }
 
 void computeRequestGeneric(enum TypeFrame type, uint8_t* request)

@@ -165,6 +165,16 @@ int main(void)
 
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
+    while (getId() == 255)
+    {
+        sendAskPosition();
+    }
+    while(1)
+    {
+        sendDebugInt(getId(),'i'); 
+        sendDebugInt(23023,'t');
+    }
+    /*
     int id = getId();
     while (id > 42){
         // on veut la bonne position
@@ -195,11 +205,11 @@ int main(void)
           oldorientation = orientation;
           orientation = result.orientation;
           
-        }
+        }*/
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    }
+    //}
 
 
   /* USER CODE END 3 */

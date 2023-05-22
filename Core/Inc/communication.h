@@ -90,7 +90,7 @@ void receiveType(uint8_t data[], enum TypeFrame type);
 
 uint8_t receiveData(enum TypeFrame type, uint8_t* pointBuffer, uint8_t* sizeReadBuffer, char buffer[]);
 
-void sendRequest(uint8_t* msg, enum TypeFrame type);
+void sendRequest(uint8_t* msg, uint8_t size);
 
 void computeRequestGeneric(enum TypeFrame type, uint8_t* request);
 
