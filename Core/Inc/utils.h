@@ -14,10 +14,24 @@
 #define MOD_BY_ANG(x,y) (((x) - (y) % 2*PI) + (y))
 #define SIGN_FLOAT(x) ((x) < 0.0 ? (-1) : 1)
 #define SIGN(x) ((x) < 0 ? (-1) : 1)
+#define BUFF_SIZE 255
 uint8_t equal_threeshold(Location first, Location second, double threeshold);
 uint8_t checksum(char* msg);
 double computeLinearDistance(Location my, Location dst);
 double computeAngularDistance(Location my, Location dst);
 MotorSpeed convertPolarSpeed(PolarSpeed speed);
 PolarSpeed convertMotorSpeed(MotorSpeed speed);
+
+
+typedef enum 
+{
+	NONE = 0,
+	ACK = 1,
+	RESPONSE_POSITION = 2,
+	DEBUG_POSITION = 3,
+	DEBUG_INT = 4,
+	DEBUG_FLOAT = 5,
+	ASK_POSITION = 6,
+} TypeRequest;
+
 #endif 

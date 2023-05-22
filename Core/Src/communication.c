@@ -111,36 +111,9 @@ uint8_t receiveData(enum TypeFrame type, uint8_t* pointBuffer, uint8_t* sizeRead
 
 void receiveRequest()
 {
-	static uint8_t start = 0;
-	static enum TypeFrame type = NONE;
-	static uint8_t sizeReadData = 0; //in bytes calculted in the start of data
-
-	char buffer[BUFF_SIZE];
-    updateDMA();
-    //printDMA();
-	getFromDMA(buffer, BUFF_SIZE);
-    sendDebugInt(buffer[0], 't');
-    uint8_t pointBuffer = 0;
-
-	if (!start)
-	{
-		receiveStartBlock(&start, buffer, &pointBuffer);
-	}
-	if (start && type == NONE && pointBuffer < BUFF_SIZE)
-	{
-		type = buffer[pointBuffer];
-		pointBuffer ++;
-	}
-	if (start && pointBuffer < BUFF_SIZE)
-	{
-		uint8_t finish = receiveData(type, &pointBuffer, &sizeReadData, buffer);
-		if (finish)
-		{
-			start = 0;
-			type = NONE;
-			sizeReadData = 0;
-		}
-	}
+    // Lire la dma 
+    // Enregistrer l'etat 
+    // fin de trame fait l'action
 }
 
 
@@ -148,7 +121,7 @@ void sendRequest(uint8_t* msg, uint8_t size)
 {
     
     if (htimESP != NULL)
-	    HAL_UART_Transmit_IT(htimESP, msg,size); 
+	    HAL_UART_Transmit_IT(htimESP, msg, size); 
     if (htimUSB != NULL)
 	    HAL_UART_Transmit_IT(htimUSB, msg, size);
 }

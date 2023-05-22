@@ -5,6 +5,7 @@ uint16_t indexDMASend = 0;
 uint8_t DMASendBuff[BUFF_SIZE];
 
 UART_HandleTypeDef* uartDMA;
+
 void initDMA(UART_HandleTypeDef* uart)
 {
     uartDMA = uart;
