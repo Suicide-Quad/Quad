@@ -23,6 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include <math.h>
 #include "main.h"
+#include "string.h" 
 #include "utils.h"
 #include "encoder.h"
 #include "pwm.h"
@@ -99,6 +100,7 @@ static void MX_TIM9_Init(void);
 /* 
  * The Callback function 
  */
+uint8_t buff [500];
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
 {
     if (htim == &htim9)
@@ -152,34 +154,31 @@ int main(void)
   MX_SPI1_Init();
   MX_TIM9_Init();
   /* USER CODE BEGIN 2 */
-    // initDebug(&huart3, &huart2);
-    initCommunication(&huart2,&huart3);
+  // initDebug(&huart3, &huart2);
+  /*initCommunication(&huart2,&huart3);
     initEncoder(&htim5, &htim2);
     initPWM(&htim8, &htim1);
-    initServo();
-    setPWM(RIGHT,0);
-    setPWM(LEFT,0);
-    //uint64_t millis = HAL_GetTick();
-    //uint64_t current;
+  // initDMA(&huart2);
+  initServo();
+  setPWM(RIGHT,0);
+  setPWM(LEFT,0);
+  //uint64_t millis = HAL_GetTick();
+  //uint64_t current;*/
   /* USER CODE END 2 */
 
-    /* Infinite loop */
-    /* USER CODE BEGIN WHILE */
-    while (getId() == 255)
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+  while (getId() == 255)
     {
-        sendAskPosition();
+    sendAskPosition();
+    receiveRequest();
     }
-    while(1)
-    {
-        sendDebugInt(getId(),'i'); 
-        sendDebugInt(23023,'t');
-    }
-    /*
-    int id = getId();
-    while (id > 42){
-        // on veut la bonne position
-        sendAskPosition();
-        id = getId();
+  /*
+     int id = getId();
+     while (id > 42){
+  // on veut la bonne position
+  sendAskPosition();
+  id = getId();
     }
     init_map(id);
     /// TODO aller sur le centre 
@@ -758,9 +757,9 @@ static void MX_TIM9_Init(void)
 
   /* USER CODE END TIM9_Init 1 */
   htim9.Instance = TIM9;
-  htim9.Init.Prescaler = 8400;
+  htim9.Init.Prescaler = 0;
   htim9.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim9.Init.Period = 2499;
+  htim9.Init.Period = 65535;
   htim9.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim9.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim9) != HAL_OK)
@@ -798,7 +797,7 @@ static void MX_USART2_UART_Init(void)
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
-  huart2.Init.Mode = UART_MODE_TX;
+  huart2.Init.Mode = UART_MODE_TX_RX;
   huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
   huart2.Init.OverSampling = UART_OVERSAMPLING_16;
   if (HAL_UART_Init(&huart2) != HAL_OK)

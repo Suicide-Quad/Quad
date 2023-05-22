@@ -39,9 +39,9 @@ uint8_t computeCheckSum(int size, uint8_t data[size])
 	uint8_t sum = 0;
 	for (int i = 0; i < size ; i ++)
 	{
-		sum += data[i];
+		sum ^= data[i];
 	}
-	return sum % 256;
+	return sum; 
 }
 
 
@@ -49,6 +49,7 @@ void receiveStartBlock(uint8_t* start, char buffer[], uint8_t* pointBuffer)
 {
 	while (!*start && *pointBuffer < BUFF_SIZE)
 	{
+        // sendDebugInt(buffer[*pointBuffer],'s');
 		if (buffer[*pointBuffer] == START_REQUEST)
 		{
 			*start = 1;
@@ -61,9 +62,9 @@ void receiveType(uint8_t data[], enum TypeFrame type)
 {
 	if (type == RESPONSE_POSITION)
 	{
-		IDArUco = data[0];
-		PositionArUco.x = data[1];
-		PositionArUco.y = data[2];
+		IDArUco = data[2];
+		PositionArUco.x = data[0];
+		PositionArUco.y = data[1];
 	}
 }
 
@@ -115,9 +116,11 @@ void receiveRequest()
 	static uint8_t sizeReadData = 0; //in bytes calculted in the start of data
 
 	char buffer[BUFF_SIZE];
+    updateDMA();
+    printDMA();
 	getFromDMA(buffer, BUFF_SIZE);
 
-	uint8_t pointBuffer = 0;
+    uint8_t pointBuffer = 0;
 
 	if (!start)
 	{
@@ -162,7 +165,7 @@ void computeRequestGeneric(enum TypeFrame type, uint8_t* request)
 	uint8_t sum = computeCheckSum(sizeType/8, &request[2]);
 	request[sizeRequest-1] = sum;
 	
-	sendRequest(request, sizeRequest*8);
+	sendRequest(request, sizeof(request));
 }
 
 void sendAskPosition()
