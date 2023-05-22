@@ -12,7 +12,7 @@ struct PositionCommand PositionArUco;
 UART_HandleTypeDef* htimESP = NULL;
 UART_HandleTypeDef* htimUSB = NULL;
 
-int SizeTypeFrame[7] = {-1,8,24,136,40,72,131072};
+int SizeTypeFrame[7] = {-1,8,24,136,40,72,8};
 
 
 
@@ -162,13 +162,15 @@ void computeRequestGeneric(enum TypeFrame type, uint8_t* request)
 	uint8_t sum = computeCheckSum(sizeType/8, &request[2]);
 	request[sizeRequest-1] = sum;
 	
-	sendRequest(request, sizeRequest);
+	sendRequest(request, sizeRequest*8);
 }
 
 void sendAskPosition()
 {
 	enum TypeFrame type = ASK_POSITION;
 	uint8_t request [SIZE_REQUEST(getSizeTypeFrame(type))];
+
+	request[2] = 10;
 
 	computeRequestGeneric(type,request);
 }
