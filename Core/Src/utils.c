@@ -1,11 +1,45 @@
 #include "utils.h"
 #include "odometer.h"
 
+uint8_t computeCheckSum(uint8_t data[BUFF_SIZE], uint32_t size)
+{
+	uint8_t sum = 0;
+	for (int i = 0; i < size ; i ++)
+	{
+		sum += data[i];
+	}
+	return sum % 255 ; 
+}
+
+
 uint8_t equalThreeshold(Location first, Location second, double threeshold)
 {
     if (first.x - threeshold < second.x && first.y + threeshold > second.y)
         return 1;
     return 0;
+}
+
+uint8_t getSizeType(TypeRequest actualType)
+{
+    switch (actualType)
+    {
+        case NONE:
+            return 0;
+        case ACK:
+            return 1;
+        case RESPONSE_POSITION:
+            return 3;
+        case DEBUG_POSITION:
+            return 17;
+        case DEBUG_INT:
+            return 5;
+        case DEBUG_FLOAT:
+            return 9;
+        case ASK_POSITION:
+            return 1;
+        default: 
+            return -1;
+    }
 }
 
 double computeLinearDistance(Location my, Location dst)
@@ -20,16 +54,6 @@ double computeAngularDistance(Location my, Location dst)
     double x = dst.x - my.x;
     double y = dst.y - my.y;
     return asin((x*x + y*y) / y);
-}
-
-uint8_t checksum(char* msg)
-{
-	uint8_t sum = 0;
-	for (int i = 0; *(msg+i) != 0; i ++)
-	{
-		sum += *(msg+i);
-	}
-	return sum % 256;
 }
 
 MotorSpeed convertPolarSpeed(PolarSpeed speed)

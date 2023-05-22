@@ -1,5 +1,4 @@
 #include "dma.h"
-#include "communication.h" 
 
 uint16_t indexDMASend = 0;
 uint8_t DMASendBuff[BUFF_SIZE];
@@ -32,11 +31,13 @@ void updateDMA()
 {
     HAL_UART_Receive_IT(uartDMA, DMASendBuff, BUFF_SIZE);
 }
-
+/*
 void printDMA()
 {
     for(int i = 0; i < 6 ; i++)
     {
-        sendDebugInt(DMASendBuff[i],'z');
+        //sendDebugInt(DMASendBuff[i],'z');
+
     }
 } 
+*/

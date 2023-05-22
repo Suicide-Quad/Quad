@@ -1,7 +1,6 @@
 #include "utils.h"
 #include "encoder.h"
 #include "odometer.h"
-#include "communication.h"
 
 uint32_t lastEncoderLeft = 0;
 uint32_t lastEncoderRight = 0;
