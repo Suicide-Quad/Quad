@@ -50,6 +50,6 @@ double computeLinearDistance(Location my, Location dst);
 double computeAngularDistance(Location my, Location dst);
 MotorSpeed convertPolarSpeed(PolarSpeed speed);
 PolarSpeed convertMotorSpeed(MotorSpeed speed);
-uint8_t computeCheckSum(uint8_t data[BUFF_SIZE], uint32_t size);
+uint8_t computeCheckSum(uint8_t* data, uint32_t size);
 uint8_t getSizeType(TypeRequest actualType);
 #endif 

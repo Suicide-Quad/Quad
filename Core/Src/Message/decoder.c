@@ -47,5 +47,3 @@ void receiveByte(uint8_t received)
         actualStatement = WAITING;
     }
 }
-
-

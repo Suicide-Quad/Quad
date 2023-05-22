@@ -28,6 +28,8 @@
 #include "encoder.h"
 #include "pwm.h"
 #include "odometer.h"
+#include "Message/send.h"
+#include "Message/generator.h" 
 #include "servo.h"
 #include "position.h"
 #include "map.h"
@@ -159,8 +161,7 @@ int main(void)
   MX_SPI1_Init();
   MX_TIM9_Init();
   /* USER CODE BEGIN 2 */
-  // initDebug(&huart3, &huart2);
-  //initCommunication(&huart2,&huart3);
+  initCommunication(&huart2,&huart3);
   initEncoder(&htim5, &htim2);
   initPWM(&htim8, &htim1);
   //initDMA(&huart2);
@@ -180,10 +181,11 @@ int main(void)
       sendAskPosition();
       receiveRequest();
   }
+    */
   while (1)
   {
-      sendDebugInt(1243,'o');
-  }*/
+     sendDebugInt(1234,'d'); 
+  }
   /*
      int id = getId();
      while (id > 42){

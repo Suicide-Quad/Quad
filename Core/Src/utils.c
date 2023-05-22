@@ -1,7 +1,7 @@
 #include "utils.h"
 #include "odometer.h"
 
-uint8_t computeCheckSum(uint8_t data[BUFF_SIZE], uint32_t size)
+uint8_t computeCheckSum(uint8_t* data, uint32_t size)
 {
 	uint8_t sum = 0;
 	for (int i = 0; i < size ; i ++)

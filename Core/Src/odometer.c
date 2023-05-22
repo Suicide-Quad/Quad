@@ -18,18 +18,18 @@ double computeSpeed(enum Encoder encoder, uint32_t encoderVal)
 
 PolarSpeed computeOdometer()
 {
-    uint32_t encoderRight = getEncoder(ENCODER_RIGHT);
-    uint32_t encoderLeft = getEncoder(ENCODER_LEFT);
+    uint32_t encoderR = getEncoder(ENCODER_RIGHT);
+    uint32_t encoderL = getEncoder(ENCODER_LEFT);
 
     // Matrice
     MotorSpeed motorSpeed;
-    motorSpeed.left = -computeSpeed(ENCODER_LEFT, encoderLeft);
-    motorSpeed.right = computeSpeed(ENCODER_RIGHT, encoderRight);
+    motorSpeed.left = -computeSpeed(ENCODER_LEFT, encoderL);
+    motorSpeed.right = computeSpeed(ENCODER_RIGHT, encoderR);
     PolarSpeed polarSpeed = convertMotorSpeed(motorSpeed);
     //sendInt("linea", (int)(RAD_TO_DEG(motorSpeed.right)*100));
     //sendFloatDebug("line", polarSpeed.linear,100);
-    lastEncoderLeft = encoderLeft;
-    lastEncoderRight = encoderRight; 
+    lastEncoderLeft = encoderL;
+    lastEncoderRight = encoderR; 
     //sendFloatDebug("linea", (polarSpeed.linear),100);
     //sendFloatDebug("angul", RAD_TO_DEG(polarSpeed.angular),1);
     return polarSpeed;
