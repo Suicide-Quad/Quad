@@ -155,10 +155,10 @@ int main(void)
   MX_TIM9_Init();
   /* USER CODE BEGIN 2 */
   // initDebug(&huart3, &huart2);
-  /*initCommunication(&huart2,&huart3);
-    initEncoder(&htim5, &htim2);
-    initPWM(&htim8, &htim1);
-  // initDMA(&huart2);
+  initCommunication(&huart2,&huart3);
+  initEncoder(&htim5, &htim2);
+  initPWM(&htim8, &htim1);
+  //initDMA(&huart2);
   initServo();
   setPWM(RIGHT,0);
   setPWM(LEFT,0);
@@ -169,46 +169,50 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (getId() == 255)
-    {
-    sendAskPosition();
-    receiveRequest();
-    }
+  {
+      sendAskPosition();
+      receiveRequest();
+  }
+  while (1)
+  {
+      sendDebugInt(1243,'o');
+  }
   /*
      int id = getId();
      while (id > 42){
   // on veut la bonne position
   sendAskPosition();
   id = getId();
-    }
-    init_map(id);
-    /// TODO aller sur le centre 
-    struct intResult result = get_father();
-    uint8_t nbrmvt = result.nbrmvt;
-    uint8_t orientation = result.orientation;
-    uint8_t oldorientation = orientation;
-    struct PositionCommand position = getPositionArUco();
-    Location current = {0, 0, oldorientation};
-    Location destination = {position.x, position.y, oldorientation};
-    int mvt = initMouvement(current, destination);
-    while (1)
-    {
-        mvt = getState();
-        if (mvt == 1)
-        {
-          current = {0, 0, oldorientation};
-          destination = {nbrmvt, nbrmvt, orientation};
-          mvt = initMouvement(current, destination);
-          
-          result = get_father();
-          nbrmvt = result.nbrmvt;
-          oldorientation = orientation;
-          orientation = result.orientation;
-          
-        }*/
-    /* USER CODE END WHILE */
+  }
+  init_map(id);
+  /// TODO aller sur le centre 
+  struct intResult result = get_father();
+  uint8_t nbrmvt = result.nbrmvt;
+  uint8_t orientation = result.orientation;
+  uint8_t oldorientation = orientation;
+  struct PositionCommand position = getPositionArUco();
+  Location current = {0, 0, oldorientation};
+  Location destination = {position.x, position.y, oldorientation};
+  int mvt = initMouvement(current, destination);
+  while (1)
+  {
+  mvt = getState();
+  if (mvt == 1)
+  {
+  current = {0, 0, oldorientation};
+  destination = {nbrmvt, nbrmvt, orientation};
+  mvt = initMouvement(current, destination);
 
-    /* USER CODE BEGIN 3 */
-    //}
+  result = get_father();
+  nbrmvt = result.nbrmvt;
+  oldorientation = orientation;
+  orientation = result.orientation;
+
+  }*/
+  /* USER CODE END WHILE */
+
+  /* USER CODE BEGIN 3 */
+  //}
 
 
   /* USER CODE END 3 */

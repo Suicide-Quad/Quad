@@ -13,13 +13,13 @@
 
 #define START_REQUEST 0xFE
 
-#define SIZE_START 8
+#define SIZE_START 1
 
-#define SIZE_TYPEFRAME 8
+#define SIZE_TYPEFRAME 1
 
-#define SIZE_CHECKSUM 8
+#define SIZE_CHECKSUM 1
 
-#define SIZE_REQUEST(data) ((SIZE_START) + (SIZE_TYPEFRAME) + (data) + (SIZE_CHECKSUM) )/8
+#define SIZE_REQUEST(data) ((SIZE_START) + (SIZE_TYPEFRAME) + (data) + (SIZE_CHECKSUM) )
 
 #define TIME_OUT 100
 
@@ -78,7 +78,6 @@ struct PositionCommand getPositionArUco();
 
 
 /*___BACKEND_FUNCTION___*/
-
 
 int getSizeTypeFrame (enum TypeFrame type);
 

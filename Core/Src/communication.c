@@ -12,7 +12,7 @@ struct PositionCommand PositionArUco;
 UART_HandleTypeDef* htimESP = NULL;
 UART_HandleTypeDef* htimUSB = NULL;
 
-int SizeTypeFrame[7] = {-1,8,24,136,40,72,8};
+int SizeTypeFrame[7] = {0,1,3,17,5,9,1};
 
 
 
@@ -39,9 +39,9 @@ uint8_t computeCheckSum(int size, uint8_t data[size])
 	uint8_t sum = 0;
 	for (int i = 0; i < size ; i ++)
 	{
-		sum ^= data[i];
+		sum += data[i];
 	}
-	return sum; 
+	return sum % 255 ; 
 }
 
 
@@ -83,19 +83,19 @@ uint8_t receiveData(enum TypeFrame type, uint8_t* pointBuffer, uint8_t* sizeRead
 	}
 
 	//received data of the request
-	while(*sizeReadBuffer < sizeType/8 && *pointBuffer < BUFF_SIZE)
+	while(*sizeReadBuffer < sizeType && *pointBuffer < BUFF_SIZE)
 	{
 		data[*pointBuffer-startBuffer] = buffer[*pointBuffer];
-		(*sizeReadBuffer) += 8;
+		(*sizeReadBuffer) += 1;
 		(*pointBuffer) ++;
 	}
 	//verify checksum
-	if (*sizeReadBuffer == sizeType/8 && *pointBuffer < BUFF_SIZE)
+	if (*sizeReadBuffer == sizeType && *pointBuffer < BUFF_SIZE)
 	{
 		uint8_t checksumRequest = buffer[*pointBuffer];
 		(*pointBuffer) ++;
 		(*sizeReadBuffer) ++;
-		uint8_t checksumCompute = computeCheckSum(sizeType/8, data);
+		uint8_t checksumCompute = computeCheckSum(sizeType, data);
 		if(checksumCompute == checksumRequest)
 			goodSum = 1;
 		if (goodSum == 1)
@@ -117,9 +117,9 @@ void receiveRequest()
 
 	char buffer[BUFF_SIZE];
     updateDMA();
-    printDMA();
+    //printDMA();
 	getFromDMA(buffer, BUFF_SIZE);
-
+    sendDebugInt(buffer[0], 't');
     uint8_t pointBuffer = 0;
 
 	if (!start)
@@ -148,9 +148,9 @@ void sendRequest(uint8_t* msg, uint8_t size)
 {
     
     if (htimESP != NULL)
-	    HAL_UART_Transmit(htimESP, msg, size, TIME_OUT);
+	    HAL_UART_Transmit_IT(htimESP, msg,size); 
     if (htimUSB != NULL)
-	    HAL_UART_Transmit(htimUSB, msg, size, TIME_OUT);
+	    HAL_UART_Transmit_IT(htimUSB, msg, size);
 }
 
 void computeRequestGeneric(enum TypeFrame type, uint8_t* request)
@@ -162,10 +162,10 @@ void computeRequestGeneric(enum TypeFrame type, uint8_t* request)
 
 	request[1] = type;
 
-	uint8_t sum = computeCheckSum(sizeType/8, &request[2]);
+	uint8_t sum = computeCheckSum(sizeType, &request[2]);
 	request[sizeRequest-1] = sum;
 	
-	sendRequest(request, sizeof(request));
+	sendRequest(request, sizeRequest);
 }
 
 void sendAskPosition()
@@ -200,6 +200,7 @@ void sendDebugPosition(double x,double y, char id)
 
 void sendDebugInt(uint32_t value, char id)
 {
+
 	enum TypeFrame type = DEBUG_INT;
 	uint8_t request [SIZE_REQUEST(getSizeTypeFrame(type))];
 
