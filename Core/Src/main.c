@@ -69,6 +69,12 @@ DMA_HandleTypeDef hdma_usart2_tx;
 
 PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
+/* ID de l'arUco détecté*/
+uint8_t id_aruco = 0;
+
+void SwitchId(uint8_t id){
+    id_aruco = id;
+}
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
