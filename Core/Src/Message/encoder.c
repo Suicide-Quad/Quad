@@ -1,5 +1,3 @@
-#ifndef _ENCODER_H
-#define _ENCODER_H
+#include "Message/encoder.h"
 
-#endif 
 

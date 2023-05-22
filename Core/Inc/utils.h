@@ -15,13 +15,8 @@
 #define SIGN_FLOAT(x) ((x) < 0.0 ? (-1) : 1)
 #define SIGN(x) ((x) < 0 ? (-1) : 1)
 #define BUFF_SIZE 255
-uint8_t equal_threeshold(Location first, Location second, double threeshold);
-uint8_t checksum(char* msg);
-double computeLinearDistance(Location my, Location dst);
-double computeAngularDistance(Location my, Location dst);
-MotorSpeed convertPolarSpeed(PolarSpeed speed);
-PolarSpeed convertMotorSpeed(MotorSpeed speed);
-
+#define MAX_TYPE_REQUEST 6
+#define START_REQUEST 0xFE
 
 typedef enum 
 {
@@ -34,4 +29,20 @@ typedef enum
 	ASK_POSITION = 6,
 } TypeRequest;
 
+typedef enum 
+{
+    WAITING,
+    SOF,
+    TYPE,
+    PAYLOAD,
+    SUM
+} StateReceive;
+
+uint8_t equal_threeshold(Location first, Location second, double threeshold);
+double computeLinearDistance(Location my, Location dst);
+double computeAngularDistance(Location my, Location dst);
+MotorSpeed convertPolarSpeed(PolarSpeed speed);
+PolarSpeed convertMotorSpeed(MotorSpeed speed);
+uint8_t computeCheckSum(uint8_t data[BUFF_SIZE], uint32_t size);
+uint8_t getSizeType(TypeRequest actualType);
 #endif 

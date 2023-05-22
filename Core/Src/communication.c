@@ -33,18 +33,6 @@ int getSizeTypeFrame (enum TypeFrame type)
 	return SizeTypeFrame[type];
 }
 
-// TODO : Merge with utils 
-uint8_t computeCheckSum(int size, uint8_t data[size])
-{
-	uint8_t sum = 0;
-	for (int i = 0; i < size ; i ++)
-	{
-		sum += data[i];
-	}
-	return sum % 255 ; 
-}
-
-
 void receiveStartBlock(uint8_t* start, char buffer[], uint8_t* pointBuffer)
 {
 	while (!*start && *pointBuffer < BUFF_SIZE)
