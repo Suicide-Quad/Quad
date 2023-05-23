@@ -33,8 +33,7 @@ extern "C" {
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
-/* Switch id */
-void SwitchId(uint8_t id);
+
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
 

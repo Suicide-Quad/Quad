@@ -70,12 +70,6 @@ DMA_HandleTypeDef hdma_usart2_tx;
 
 PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
-/* ID de l'arUco détecté*/
-uint8_t id_aruco = 0;
-
-void SwitchId(uint8_t id){
-    id_aruco = id;
-}
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -182,9 +176,12 @@ int main(void)
       receiveRequest();
   }
     */
+  int i = 0;
   while (1)
   {
-     sendDebugInt(1234,'d'); 
+      i ++;
+     sendDebugInt(i,'d'); 
+     i = i % 10000;
   }
   /*
      int id = getId();
@@ -218,9 +215,9 @@ int main(void)
   orientation = result.orientation;
 
   }*/
-  /* USER CODE END WHILE */
+    /* USER CODE END WHILE */
 
-  /* USER CODE BEGIN 3 */
+    /* USER CODE BEGIN 3 */
   //}
 
 
