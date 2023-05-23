@@ -110,6 +110,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
     }
 }
 
+uint8_t idArUco;
+
+void SwitchId(uint8_t id)
+{
+    idArUco = id;
+}
+
 /* USER CODE END 0 */
 
 /**
