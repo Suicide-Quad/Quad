@@ -7,7 +7,7 @@ Pour rappel, nous avons pour objectif de créer un robot qui map un labyrinthe. 
 
 ## Installation / Déploiment
 
-Pour compiler et deployer notre projet, voici quelques instructions :
+Pour compiler et déployer notre projet, voici quelques instructions :
 
 ### La compilation
 > Nécessite arm-none-eabi-gcc
