@@ -1,13 +1,14 @@
-/** A simple kalman filter example by Adrian Boeing 
- www.adrianboeing.com 
- Compile with : gcc kalman_filter.c -o kalman_filter 
+/** 
+    This is a test function to check the Kalman filter implementation.
+    Compile with : gcc kalman_filter_test.c -o kalman_filter 
 */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#define ITERATIONS 30
 
-// Random number between -1 and 1
+// Random number between -1 and 1 used to simulate noise in Kalman measurements
 double frand() {
     return 2*((rand()/(double)RAND_MAX) - 0.5);
 }
@@ -37,7 +38,7 @@ int main() {
     float sum_error_kalman = 0;
     float sum_error_measure = 0;
     
-    for (int i=0;i<30;i++) {
+    for (int i=0;i<ITERATIONS;i++) {
         //do a prediction
         x_temp_estimate = x_last_estimate;
         P_temp = P_last + Q;
