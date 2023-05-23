@@ -5,3 +5,8 @@
 [Dd]ebug
 .launch
 build/
+compile_commands.json
+*.swp
+tags
+*.json
+.cache/
