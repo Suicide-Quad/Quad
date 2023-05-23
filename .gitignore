@@ -6,4 +6,8 @@
 .launch
 build/
 kalman_filter
+compile_commands.json
+*.swp
+tags
+*.json
 .cache/

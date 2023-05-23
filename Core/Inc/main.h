@@ -196,6 +196,7 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN Private defines */
 
+void SwitchId(uint8_t id);
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
