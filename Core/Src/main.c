@@ -176,12 +176,11 @@ int main(void)
       receiveRequest();
   }
     */
-  int i = 0;
   while (1)
   {
-      i ++;
-     sendDebugInt(i,'d'); 
-     i = i % 10000;
+      sendDebugDouble(5.6,'y');
+      sendDebugPosition(5.6,654.5,'t');
+      sendDebugInt(5,'r');
   }
   /*
      int id = getId();

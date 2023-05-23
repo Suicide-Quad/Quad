@@ -11,6 +11,17 @@ void initCommunication(UART_HandleTypeDef* uartESP, UART_HandleTypeDef* uartUSB)
     huartUSB = uartUSB;
 }
 
+uint8_t getTimeout(TypeRequest actualType)
+{
+    switch (actualType)
+    {
+        case DEBUG_INT:
+            return 10;
+        default: 
+            return 20;
+    }
+}
+
 void sendData(TypeRequest actualType, uint8_t* payload)
 {
     uint8_t actualSize = getSizeType(actualType);
@@ -25,7 +36,7 @@ void sendData(TypeRequest actualType, uint8_t* payload)
     uint8_t sum = computeCheckSum(payload, actualSize);
     request[sizeof(request) -1] = sum;
     if (huartESP != NULL)
-        HAL_UART_Transmit(huartESP, request, 3 + actualSize, 10);
+        HAL_UART_Transmit(huartESP, request, 3 + actualSize, getTimeout(actualType));
     if (huartUSB != NULL)
-        HAL_UART_Transmit(huartUSB, request, 3 + actualSize, 10);
+        HAL_UART_Transmit(huartUSB, request, 3 + actualSize, getTimeout(actualType));
 }
